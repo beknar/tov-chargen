@@ -18,6 +18,10 @@ export interface Character {
   backgroundId: string | null
   /** Talent chosen from the background's options (talent name). */
   talentId: string | null
+  /** Starting-equipment method: take granted gear, or roll for wealth. */
+  equipmentMethod: 'granted' | 'wealth' | null
+  /** Starting gold (Method 2), in gp. */
+  gold: number | null
 }
 
 export const DEFAULT_ABILITY_SCORES: AbilityScores = {
@@ -40,4 +44,6 @@ export const INITIAL_CHARACTER: Character = {
   heritageId: null,
   backgroundId: null,
   talentId: null,
+  equipmentMethod: null,
+  gold: null,
 }

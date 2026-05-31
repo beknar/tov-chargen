@@ -55,3 +55,10 @@ export function roll4d6DropLowest(rng: () => number = Math.random): number {
 export function rollAbilityArray(rng: () => number = Math.random): number[] {
   return Array.from({ length: 6 }, () => roll4d6DropLowest(rng))
 }
+
+/** Starting wealth (Method 2): roll 5d4 × 10 gp. */
+export function rollStartingGold(rng: () => number = Math.random): number {
+  let sum = 0
+  for (let i = 0; i < 5; i++) sum += 1 + Math.floor(rng() * 4)
+  return sum * 10
+}

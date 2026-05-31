@@ -63,6 +63,12 @@ export function CharacterSummary() {
           <dt>Proficiency</dt>
           <dd>{formatModifier(PROFICIENCY_BONUS)}</dd>
         </div>
+        {character.gold !== null && (
+          <div>
+            <dt>Gold</dt>
+            <dd>{character.gold} gp</dd>
+          </div>
+        )}
       </dl>
 
       <table className="summary-abilities">

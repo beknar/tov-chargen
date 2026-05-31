@@ -81,9 +81,10 @@ directly in a browser, independent of the app.
 - **Heritage** — all 14 heritages with traits and starting languages
 - **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a choice
   of one talent from the background's options
+- **Equipment** — take granted class + background gear, or roll starting wealth (5d4 × 10 gp)
 - Character state persisted to `localStorage`
 
-Equipment and review are stubbed placeholders — see the [roadmap](#roadmap).
+Review is the only remaining stubbed placeholder — see the [roadmap](#roadmap).
 
 ## The rules reference
 

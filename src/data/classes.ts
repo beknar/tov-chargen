@@ -2,11 +2,12 @@ import type { Ability } from './abilities'
 
 // The 13 core classes (Player's Guide, Chapter 2).
 //
-// hitDie, savingThrows, proficiencies, and 1st-level `features` are extracted
-// from each class entry in the rules reference. `features` lists the named
-// 1st-level class features and is NOT exhaustive of every level-1 ability —
-// see the Player's Guide for full feature text, options, and subclasses.
-// `keyAbility` (primary ability) and `description` are curated.
+// hitDie, savingThrows, proficiencies, 1st-level `features`, and
+// `startingEquipment` are extracted from each class entry in the rules
+// reference. `features` lists the named 1st-level class features and is NOT
+// exhaustive of every level-1 ability — see the Player's Guide for full
+// feature text, options, and subclasses. `keyAbility` (primary ability) and
+// `description` are curated.
 
 export interface ClassFeature {
   name: string
@@ -36,6 +37,8 @@ export interface ClassDef {
   proficiencies: ClassProficiencies
   /** Named 1st-level features (not exhaustive). */
   features: ClassFeature[]
+  /** Starting equipment options (Method 1). Each entry may list (a)/(b) choices. */
+  startingEquipment: string[]
 }
 
 export const CLASSES: ClassDef[] = [
@@ -67,6 +70,11 @@ export const CLASSES: ClassDef[] = [
         "name": "Unarmored Defense",
         "text": "While you aren't wearing any armor, your AC equals 13 + your CON modifier. (DEX doesn't factor into your AC for this class feature.) You can use a shield and still gain this benefit."
       }
+    ],
+    "startingEquipment": [
+      "(a) a greataxe or (b) any martial melee weapon",
+      "(a) two handaxes or (b) any simple weapon",
+      "An explorer’s pack and four javelins"
     ]
   },
   {
@@ -93,6 +101,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Spellcasting",
         "text": "As a conduit for arcane power, you can cast Arcane spells. See Chapter 7: Spellcasting for general rules of spellcasting and the Arcane spell list."
       }
+    ],
+    "startingEquipment": [
+      "(a) a rapier or (b) any simple weapon",
+      "(a) a diplomat’s pack or (b) an entertainer’s pack",
+      "(a) a musical instrument or (b) a different tool you are proficient with",
+      "Leather armor and a dagger"
     ]
   },
   {
@@ -123,6 +137,13 @@ export const CLASSES: ClassDef[] = [
         "name": "Manifestation of Faith",
         "text": "Clerics demonstrate their faith in one of two primary ways, wielding it as a holy warrior or calling it as a miracle worker. Choose how you manifest your faith with one of the following. Manifest Might. You gain proficiency with heavy armor and one type of martial weapon of your choice (see Weapons in Chapter 5)."
       }
+    ],
+    "startingEquipment": [
+      "(a) a mace or (b) a warhammer (if proficient)",
+      "(a) scale mail, (b) leather armor, or (c) chain mail (if proficient)",
+      "(a) light crossbow and 20 bolts or (b) any simple weapon",
+      "(a) a priest’s pack or (b) an explorer’s pack",
+      "A shield and a holy symbol"
     ]
   },
   {
@@ -157,6 +178,11 @@ export const CLASSES: ClassDef[] = [
         "name": "Nature’s Gift",
         "text": "You have learned to harness the ambient energy of nature and can redirect that energy to encourage growth and healing. As a bonus action, choose one creature within 5"
       }
+    ],
+    "startingEquipment": [
+      "(a) a shield or (b) any simple weapon",
+      "(a) a scimitar or (b) any simple melee weapon",
+      "Leather armor, an explorer’s pack, and a druidic focus"
     ]
   },
   {
@@ -184,6 +210,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Last Stand",
         "text": "When you take damage that would reduce your hit points to less than half your hit point maximum (rounded down), you can use your reaction to spend hit dice, up to a number equal to your PB. Immediately roll those hit dice. You regain hit points equal to the sum of all dice rolled + your CON modifier."
       }
+    ],
+    "startingEquipment": [
+      "(a) chain mail or (b) leather armor, longbow, and 20 arrows",
+      "(a) a martial weapon and a shield or (b) two martial weapons",
+      "(a) a light crossbow and 20 bolts or (b) two handaxes",
+      "(a) a dungeoneer’s pack or (b) an explorer’s pack"
     ]
   },
   {
@@ -214,6 +246,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Shard of Creation",
         "text": "You learn how to craft a shard of creation, which is a Tiny magical object with many uses that appears on your person. In its base state, the shard appears as a constantly shifting, fluid-like bundle of plasma."
       }
+    ],
+    "startingEquipment": [
+      "(a) a martial weapon and a shield or (b) two simple weapons",
+      "Light crossbow and 20 bolts",
+      "(a) scale mail or (b) leather armor",
+      "Tinker tools and a dungeoneer’s pack"
     ]
   },
   {
@@ -245,6 +283,11 @@ export const CLASSES: ClassDef[] = [
         "name": "Unarmored Defense",
         "text": "While you are wearing no armor and not wielding a shield, your AC equals 10 + your DEX modifier + your WIS modifier."
       }
+    ],
+    "startingEquipment": [
+      "(a) any simple weapon",
+      "(a) a dungeoneer’s pack or (b) an explorer’s pack",
+      "(a) 10 darts or (b) a sling"
     ]
   },
   {
@@ -276,6 +319,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Lay on Hands",
         "text": "Your blessed touch can heal wounds. You have a pool of healing power that replenishes when you take a long rest. With that pool, you can restore a total number of hit points equal to 5 × your paladin level."
       }
+    ],
+    "startingEquipment": [
+      "(a) a martial weapon and a shield or (b) two martial weapons",
+      "(a) five javelins or (b) any simple melee weapon",
+      "(a) a priest’s pack or (b) an explorer's pack",
+      "Chain mail and a holy symbol"
     ]
   },
   {
@@ -303,6 +352,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Explorer",
         "text": "Your ability to deal with environmental challenges is unmatched. You gain the following benefits:"
       }
+    ],
+    "startingEquipment": [
+      "(a) scale mail or (b) leather armor",
+      "(a) two shortswords or (b) two simple weapons",
+      "(a) a dungeoneer's pack or (b) an explorer's pack",
+      "A longbow and quiver of 20 arrows"
     ]
   },
   {
@@ -333,6 +388,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Thieves’ Cant",
         "text": "During your rogue training, you learned Thieves’ Cant, a secret mix of dialect, jargon, and code that allows you to hide messages in seemingly normal conversation. Only another creature who knows Thieves’ Cant understands such messages."
       }
+    ],
+    "startingEquipment": [
+      "(a) a rapier or (b) a shortsword",
+      "(a) a shortbow and quiver of 20 arrows or (b) a shortsword",
+      "(a) a burglar’s pack, (b) a dungeoneer’s pack, or (c) an explorer’s pack",
+      "Leather armor, two daggers, and a set of thieves’ tools"
     ]
   },
   {
@@ -363,6 +424,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Spellcasting",
         "text": "As a conduit for arcane power, you can cast Arcane spells. See Chapter 7: Spellcasting for general rules of spellcasting and the Arcane spell list."
       }
+    ],
+    "startingEquipment": [
+      "(a) a light crossbow and 20 bolts or (b) any simple weapon",
+      "(a) a component pouch or (b) an arcane focus",
+      "(a) a dungeoneer’s pack or (b) an explorer’s pack",
+      "Two daggers"
     ]
   },
   {
@@ -389,6 +456,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Pact Boon",
         "text": "The initial pact that grants you your warlock powers is sealed with the gift of a Pact Boon. You gain one of the following boons of your choice. Pact of the Blade You can use your action to create a pact weapon in your empty hand. You can choose the form that this melee weapon takes each time you create it."
       }
+    ],
+    "startingEquipment": [
+      "(a) a light crossbow and 20 bolts or (b) any simple weapon",
+      "(a) a component pouch or (b) a wyrd focus",
+      "(a) a scholar’s pack or (b) a dungeoneer’s pack",
+      "Leather armor, any simple weapon, and two daggers"
     ]
   },
   {
@@ -419,6 +492,12 @@ export const CLASSES: ClassDef[] = [
         "name": "Spellcasting",
         "text": "As a student of Arcane magic, you have a spellbook containing spells that show the first glimmerings of your true power. See Chapter 7: Spellcasting for general rules of spellcasting and the Arcane spell list."
       }
+    ],
+    "startingEquipment": [
+      "(a) a quarterstaff or (b) a dagger",
+      "(a) a component pouch or (b) an arcane focus",
+      "(a) a scholar’s pack or (b) an explorer’s pack",
+      "A spellbook"
     ]
   }
 ]
