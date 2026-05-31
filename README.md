@@ -72,13 +72,16 @@ directly in a browser, independent of the app.
 ### What's implemented
 
 - Step wizard shell with navigation and a live character summary
-- **Concept**, **Class** (all 11 classes), **Ability Scores** (standard array, point-buy
-  with the full 32-point cost table, and 4d6-drop-lowest rolling), and **Lineage** (all 8
-  lineages with size, speed, and traits) steps
+- **Concept**
+- **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies, and
+  notable 1st-level features
+- **Ability Scores** — standard array, point-buy with the full 32-point cost table, and
+  4d6-drop-lowest rolling
+- **Lineage** — all 8 lineages with size, speed, and traits
+- **Heritage** — all 14 heritages with traits and starting languages
 - Character state persisted to `localStorage`
 
-Heritage, background, equipment, and review are stubbed placeholders — see the
-[roadmap](#roadmap).
+Background, equipment, and review are stubbed placeholders — see the [roadmap](#roadmap).
 
 ## The rules reference
 
