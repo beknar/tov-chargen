@@ -496,6 +496,14 @@ button:disabled {
   margin-top: 0.5rem;
 }
 
+/* ---- Talent choices ---- */
+
+.talent-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.6rem;
+}
+
 /* ---- Placeholder ---- */
 
 .placeholder {

@@ -79,9 +79,11 @@ directly in a browser, independent of the app.
   4d6-drop-lowest rolling
 - **Lineage** — all 8 lineages with size, speed, and traits
 - **Heritage** — all 14 heritages with traits and starting languages
+- **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a choice
+  of one talent from the background's options
 - Character state persisted to `localStorage`
 
-Background, equipment, and review are stubbed placeholders — see the [roadmap](#roadmap).
+Equipment and review are stubbed placeholders — see the [roadmap](#roadmap).
 
 ## The rules reference
 

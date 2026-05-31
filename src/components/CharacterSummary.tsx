@@ -7,6 +7,7 @@ import {
 import { getClass } from '../data/classes'
 import { getLineage } from '../data/lineages'
 import { getHeritage } from '../data/heritages'
+import { getBackground } from '../data/backgrounds'
 import { useCharacter } from '../state/CharacterContext'
 
 /** Proficiency bonus is +2 at 1st level. */
@@ -17,6 +18,7 @@ export function CharacterSummary() {
   const cls = getClass(character.classId)
   const lineage = getLineage(character.lineageId)
   const heritage = getHeritage(character.heritageId)
+  const background = getBackground(character.backgroundId)
   const conMod = abilityModifier(character.abilityScores.con)
   const startingHp = cls ? cls.hitDie + conMod : null
 
@@ -44,6 +46,14 @@ export function CharacterSummary() {
         <div>
           <dt>Speed</dt>
           <dd>{lineage ? `${lineage.speed} ft` : <span className="muted">—</span>}</dd>
+        </div>
+        <div>
+          <dt>Background</dt>
+          <dd>{background ? background.name : <span className="muted">—</span>}</dd>
+        </div>
+        <div>
+          <dt>Talent</dt>
+          <dd>{character.talentId ?? <span className="muted">—</span>}</dd>
         </div>
         <div>
           <dt>Hit Points</dt>

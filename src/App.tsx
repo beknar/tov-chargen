@@ -8,6 +8,7 @@ import { ClassStep } from './components/steps/ClassStep'
 import { AbilityScoresStep } from './components/steps/AbilityScoresStep'
 import { LineageStep } from './components/steps/LineageStep'
 import { HeritageStep } from './components/steps/HeritageStep'
+import { BackgroundStep } from './components/steps/BackgroundStep'
 import { PlaceholderStep } from './components/steps/PlaceholderStep'
 
 function renderStep(stepId: string) {
@@ -22,6 +23,8 @@ function renderStep(stepId: string) {
       return <LineageStep />
     case 'heritage':
       return <HeritageStep />
+    case 'background':
+      return <BackgroundStep />
     default:
       return <PlaceholderStep stepId={stepId} />
   }

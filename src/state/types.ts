@@ -16,6 +16,8 @@ export interface Character {
   lineageId: string | null
   heritageId: string | null
   backgroundId: string | null
+  /** Talent chosen from the background's options (talent name). */
+  talentId: string | null
 }
 
 export const DEFAULT_ABILITY_SCORES: AbilityScores = {
@@ -37,4 +39,5 @@ export const INITIAL_CHARACTER: Character = {
   lineageId: null,
   heritageId: null,
   backgroundId: null,
+  talentId: null,
 }

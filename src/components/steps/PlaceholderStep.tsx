@@ -1,7 +1,6 @@
 import { STEPS } from '../../data/steps'
 
 const NOTES: Record<string, string> = {
-  background: 'Background selection (skills, talents, starting gear) will go here.',
   equipment: 'Starting equipment — take class + background gear, or roll wealth and buy.',
   review: 'Final review and character sheet export will go here.',
 }
