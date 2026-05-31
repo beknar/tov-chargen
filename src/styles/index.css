@@ -468,6 +468,34 @@ button:disabled {
   margin: 0.1rem 0 0;
 }
 
+/* ---- Class proficiencies ---- */
+
+.prof-list {
+  margin: 0 0 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+}
+.prof-list > div {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+.prof-list dt {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.prof-list dd {
+  margin: 0;
+}
+.feature-note {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
 /* ---- Placeholder ---- */
 
 .placeholder {
