@@ -802,6 +802,38 @@ button:disabled {
   font-size: 0.75rem;
   color: var(--muted);
 }
+.show-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.4rem;
+}
+.gear-panel {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+.gear-panel li {
+  padding: 0.35rem 0.6rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.worn-tag {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--accent);
+  color: var(--bg);
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+  margin-left: auto;
+}
 
 /* ---- Spell selection ---- */
 

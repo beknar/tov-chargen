@@ -91,6 +91,11 @@ directly in a browser, independent of the app.
 - **Magic items** — optional, filterable 214-item catalog (type, rarity, attunement, text)
 - **Robust save/load** — imported files and old saves are sanitized so malformed data can't
   corrupt the character state
+- **Combat** — a final step (after Review) with a live stat strip (AC, HP, initiative,
+  proficiency, speed), an attacks table (attack bonus, damage incl. versatile, range,
+  properties, unarmed strike), and Features & Abilities. The weapon picker is limited to
+  the character's actual inventory (granted gear + purchases), and a Worn & Carried panel
+  lists their armor, shield, and magic items
 - **Equipment** — Method 1: pick your class's (a)/(b) gear options interactively; Method 2:
   roll starting wealth (5d4 × 10 gp) and **buy from a priced shop** (armor, 37 weapons,
   packs, 87 gear items) with a live wallet and filter. Plus **armor selection and AC**

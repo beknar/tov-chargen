@@ -4,8 +4,10 @@ import { getClass } from '../../data/classes'
 import { getSubclass } from '../../data/subclasses'
 import { getLineage } from '../../data/lineages'
 import { getHeritage } from '../../data/heritages'
-import { computeAC } from '../../data/armor'
+import { computeAC, getArmor } from '../../data/armor'
 import { WEAPONS, getWeapon } from '../../data/weapons'
+import { getMagicItem } from '../../data/magicItems'
+import { deriveInventory } from '../../data/inventory'
 import { getTalent } from '../../data/talents'
 import { unarmedStrike, weaponAttack, PB, type Attack } from '../../data/combat'
 import { useCharacter } from '../../state/CharacterContext'
@@ -25,18 +27,21 @@ export function CombatStep() {
   const equipped = character.equippedWeapons.map(getWeapon).filter((w): w is NonNullable<typeof w> => !!w)
   const attacks: Attack[] = [unarmedStrike(character), ...equipped.map((w) => weaponAttack(character, w))]
 
-  // weapons the player bought, for a quick "equip" shortcut
-  const purchasedWeaponIds = character.purchases
-    .map((p) => p.id)
-    .filter((id) => getWeapon(id) && !character.equippedWeapons.includes(id))
+  const inv = deriveInventory(character)
+  const [showAll, setShowAll] = useState(false)
 
   function toggleWeapon(id: string) {
     const cur = character.equippedWeapons
     patch({ equippedWeapons: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id] })
   }
 
+  // weapons available to equip: the character's inventory (or all, on request).
+  // Anything already equipped stays visible so it can be unequipped.
   const q = query.trim().toLowerCase()
-  const list = WEAPONS.filter((w) => !q || w.name.toLowerCase().includes(q))
+  const available = WEAPONS.filter(
+    (w) => showAll || inv.weaponIds.includes(w.id) || character.equippedWeapons.includes(w.id),
+  )
+  const list = available.filter((w) => !q || w.name.toLowerCase().includes(q))
 
   return (
     <div className="combat-step">
@@ -81,45 +86,95 @@ export function CombatStep() {
         aren’t proficient with (no proficiency bonus). Versatile damage shows the two-handed die.
       </p>
 
+      <GearPanel inv={inv} armorId={character.armorId} />
+
       <h3>Equip weapons</h3>
-      {purchasedWeaponIds.length > 0 && (
-        <button
-          className="secondary small"
-          onClick={() =>
-            patch({ equippedWeapons: [...new Set([...character.equippedWeapons, ...purchasedWeaponIds])] })
-          }
-        >
-          Equip purchased weapons ({purchasedWeaponIds.length})
-        </button>
+      <p className="muted feature-note">
+        Weapons from your inventory (class/background gear and purchases).{' '}
+        <label className="show-all">
+          <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} />
+          Show all weapons
+        </label>
+      </p>
+      {available.length > 0 && (
+        <input
+          type="search"
+          placeholder="Filter weapons…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="weapon-filter"
+        />
       )}
-      <input
-        type="search"
-        placeholder="Filter weapons…"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="weapon-filter"
-      />
-      <div className="weapon-pick">
-        {list.map((w) => {
-          const on = character.equippedWeapons.includes(w.id)
-          return (
-            <button
-              key={w.id}
-              className={`weapon-chip ${on ? 'on' : ''}`}
-              aria-pressed={on}
-              onClick={() => toggleWeapon(w.id)}
-            >
-              <span className="wc-name">{on ? '✓ ' : ''}{w.name}</span>
-              <span className="wc-meta">
-                {w.damage} · {w.category} {w.kind}
-              </span>
-            </button>
-          )
-        })}
-      </div>
+      {available.length === 0 ? (
+        <p className="muted">
+          No specific weapons found in your inventory. Add weapons in the Equipment step, or tick
+          “Show all weapons” to equip any (e.g. for a generic “martial weapon” grant).
+        </p>
+      ) : (
+        <div className="weapon-pick">
+          {list.map((w) => {
+            const on = character.equippedWeapons.includes(w.id)
+            return (
+              <button
+                key={w.id}
+                className={`weapon-chip ${on ? 'on' : ''}`}
+                aria-pressed={on}
+                onClick={() => toggleWeapon(w.id)}
+              >
+                <span className="wc-name">{on ? '✓ ' : ''}{w.name}</span>
+                <span className="wc-meta">
+                  {w.damage} · {w.category} {w.kind}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       <SpecialAbilities character={character} />
     </div>
+  )
+}
+
+function GearPanel({
+  inv,
+  armorId,
+}: {
+  inv: ReturnType<typeof deriveInventory>
+  armorId: string | null
+}) {
+  const hasGear = inv.armorIds.length > 0 || inv.hasShield || inv.magicItemIds.length > 0
+  if (!hasGear) return null
+  return (
+    <>
+      <h3>Worn & carried</h3>
+      <ul className="gear-panel">
+        {inv.armorIds.map((id) => {
+          const a = getArmor(id)
+          if (!a) return null
+          const worn = id === armorId
+          return (
+            <li key={id}>
+              {a.name} <span className="muted">(armor, AC {a.baseAC})</span>
+              {worn && <span className="worn-tag">worn</span>}
+            </li>
+          )
+        })}
+        {inv.hasShield && (
+          <li>
+            Shield <span className="muted">(+2 AC)</span>
+          </li>
+        )}
+        {inv.magicItemIds.map((id) => {
+          const mi = getMagicItem(id)
+          return mi ? (
+            <li key={id}>
+              {mi.name} <span className="muted">({mi.rarity}{mi.attunement ? ', attunement' : ''})</span>
+            </li>
+          ) : null
+        })}
+      </ul>
+    </>
   )
 }
 
