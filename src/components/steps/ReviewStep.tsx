@@ -8,6 +8,8 @@ import {
   type Ability,
 } from '../../data/abilities'
 import { getClass } from '../../data/classes'
+import { getSubclass } from '../../data/subclasses'
+import { computeAC } from '../../data/armor'
 import { getLineage } from '../../data/lineages'
 import { getHeritage } from '../../data/heritages'
 import { getBackground } from '../../data/backgrounds'
@@ -35,11 +37,13 @@ export function ReviewStep() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const cls = getClass(character.classId)
+  const subclass = getSubclass(character.classId, character.subclassId)
   const lineage = getLineage(character.lineageId)
   const heritage = getHeritage(character.heritageId)
   const background = getBackground(character.backgroundId)
   const conMod = abilityModifier(character.abilityScores.con)
   const hp = cls ? cls.hitDie + conMod : null
+  const ac = computeAC(character.abilityScores, character.classId, character.armorId, character.shield)
   const missing = completeness(character)
 
   function isProficientSave(a: Ability) {
@@ -151,6 +155,10 @@ export function ReviewStep() {
             <span className="stat-value">{hp ?? '—'}</span>
           </div>
           <div>
+            <span className="stat-label">Armor Class</span>
+            <span className="stat-value">{ac.ac}</span>
+          </div>
+          <div>
             <span className="stat-label">Hit Die</span>
             <span className="stat-value">{cls ? `d${cls.hitDie}` : '—'}</span>
           </div>
@@ -172,7 +180,10 @@ export function ReviewStep() {
 
         {cls && (
           <section className="sheet-block">
-            <h3>Class — {cls.name}</h3>
+            <h3>
+              Class — {cls.name}
+              {subclass ? ` (${subclass.name})` : ''}
+            </h3>
             <ul className="sheet-kv">
               <li>
                 <strong>Armor:</strong> {cls.proficiencies.armor || '—'}

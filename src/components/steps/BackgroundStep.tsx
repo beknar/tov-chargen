@@ -1,5 +1,5 @@
 import { BACKGROUNDS, getBackground } from '../../data/backgrounds'
-import { getTalent } from '../../data/talents'
+import { TALENT_CATEGORIES, getTalent, talentsByCategory } from '../../data/talents'
 import { useCharacter } from '../../state/CharacterContext'
 
 export function BackgroundStep() {
@@ -63,7 +63,11 @@ export function BackgroundStep() {
           </dl>
 
           <h3>Choose a talent</h3>
-          <div className="talent-choices" role="radiogroup" aria-label="Talent">
+          <p className="muted feature-note">
+            Suggested for {selected.name}: {selected.talentChoices.join(', ')}. You may pick
+            any talent from the catalog below (mind the prerequisites).
+          </p>
+          <div className="talent-choices" role="radiogroup" aria-label="Suggested talents">
             {selected.talentChoices.map((name) => {
               const sel = character.talentId === name
               return (
@@ -74,12 +78,44 @@ export function BackgroundStep() {
                   className={`choice-card ${sel ? 'selected' : ''}`}
                   onClick={() => patch({ talentId: name })}
                 >
-                  <span className="choice-title">{name}</span>
+                  <span className="choice-title">
+                    {name}
+                    <span className="tag">suggested</span>
+                  </span>
                   <span className="choice-desc">{getTalent(name) ?? 'See the Player’s Guide.'}</span>
                 </button>
               )
             })}
           </div>
+
+          <details className="talent-catalog">
+            <summary>Browse the full talent catalog</summary>
+            {TALENT_CATEGORIES.map((cat) => (
+              <div key={cat} className="talent-cat">
+                <h4>{cat} Talents</h4>
+                <ul className="talent-list">
+                  {talentsByCategory(cat).map((t) => {
+                    const sel = character.talentId === t.name
+                    return (
+                      <li key={t.id}>
+                        <button
+                          className={`talent-row ${sel ? 'selected' : ''}`}
+                          aria-pressed={sel}
+                          onClick={() => patch({ talentId: t.name })}
+                        >
+                          <span className="talent-row-name">{t.name}</span>
+                          {t.prerequisite && (
+                            <span className="talent-row-prereq">Prereq: {t.prerequisite}</span>
+                          )}
+                          <span className="talent-row-desc">{t.description}</span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ))}
+          </details>
         </div>
       )}
     </div>

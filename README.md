@@ -73,15 +73,16 @@ directly in a browser, independent of the app.
 
 - Step wizard shell with navigation and a live character summary
 - **Concept**
-- **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies, and
-  notable 1st-level features
+- **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies,
+  notable 1st-level features, and **subclass selection** (all 27 subclasses)
 - **Ability Scores** — standard array, point-buy with the full 32-point cost table, and
   4d6-drop-lowest rolling
 - **Lineage** — all 8 lineages with size, speed, and traits
 - **Heritage** — all 14 heritages with traits and starting languages
-- **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a choice
-  of one talent from the background's options
-- **Equipment** — take granted class + background gear, or roll starting wealth (5d4 × 10 gp)
+- **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a talent
+  picker (background suggestions plus the **full 45-talent catalog** with prerequisites)
+- **Equipment** — take granted class + background gear or roll starting wealth (5d4 × 10 gp),
+  plus **armor selection and AC** (armor table + Unarmored Defense for Barbarian/Monk)
 - **Review** — assembled character sheet (abilities with save bonuses, derived HP/speed,
   class/lineage/heritage/background features and traits, equipment) with **JSON
   export/import** and **print / save-to-PDF**
@@ -116,11 +117,12 @@ python3 convert.py 13 19      # optional page range, for testing
 - [x] Equipment / starting wealth
 - [x] Derived stats (HP, proficiency bonus, save bonuses)
 - [x] Character sheet view + save/load (JSON export/import, print)
+- [x] Subclass selection (all 27 subclasses)
+- [x] Full talent catalog selection (all 45 talents with prerequisites)
+- [x] Armor / Unarmored Defense AC model
 - [ ] Interactive skill selection (resolve "choose two from…" into picks)
 - [ ] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
 - [ ] Spell selection for casters
-- [ ] Full talents browser (all Magic / Martial / Technical talents)
-- [ ] Subclass selection
 
 ## Attribution & licensing
 

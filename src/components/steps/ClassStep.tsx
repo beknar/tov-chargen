@@ -1,10 +1,12 @@
 import { ABILITY_ABBR } from '../../data/abilities'
 import { CLASSES, getClass } from '../../data/classes'
+import { getSubclasses } from '../../data/subclasses'
 import { useCharacter } from '../../state/CharacterContext'
 
 export function ClassStep() {
   const { character, patch } = useCharacter()
   const selected = getClass(character.classId)
+  const subclasses = getSubclasses(character.classId)
 
   return (
     <div className="class-step">
@@ -17,7 +19,9 @@ export function ClassStep() {
               role="radio"
               aria-checked={sel}
               className={`choice-card ${sel ? 'selected' : ''}`}
-              onClick={() => patch({ classId: cls.id })}
+              onClick={() =>
+                patch({ classId: cls.id, subclassId: cls.id === character.classId ? character.subclassId : null })
+              }
             >
               <span className="choice-title">
                 {cls.name}
@@ -78,9 +82,31 @@ export function ClassStep() {
                 ))}
               </dl>
               <p className="muted feature-note">
-                Notable 1st-level features — see the Player's Guide for full text, options,
-                and subclasses.
+                Notable 1st-level features — see the Player's Guide for full text and options.
               </p>
+            </>
+          )}
+
+          {subclasses.length > 0 && (
+            <>
+              <h3>Subclass</h3>
+              <div className="card-grid" role="radiogroup" aria-label="Subclass">
+                {subclasses.map((sc) => {
+                  const sel = character.subclassId === sc.id
+                  return (
+                    <button
+                      key={sc.id}
+                      role="radio"
+                      aria-checked={sel}
+                      className={`choice-card ${sel ? 'selected' : ''}`}
+                      onClick={() => patch({ subclassId: sc.id })}
+                    >
+                      <span className="choice-title">{sc.name}</span>
+                      <span className="choice-desc">{sc.flavor}</span>
+                    </button>
+                  )
+                })}
+              </div>
             </>
           )}
         </div>

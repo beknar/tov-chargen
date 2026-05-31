@@ -8,6 +8,8 @@ export interface Character {
   name: string
   concept: string
   classId: string | null
+  /** Subclass chosen for the class. */
+  subclassId: string | null
   scoreMethod: ScoreMethod | null
   abilityScores: AbilityScores
   /** Persisted 4d6-drop-lowest results when the rolling method is used. */
@@ -22,6 +24,10 @@ export interface Character {
   equipmentMethod: 'granted' | 'wealth' | null
   /** Starting gold (Method 2), in gp. */
   gold: number | null
+  /** Equipped armor (armor id) for AC calculation. */
+  armorId: string | null
+  /** Whether a shield is equipped. */
+  shield: boolean
 }
 
 export const DEFAULT_ABILITY_SCORES: AbilityScores = {
@@ -37,6 +43,7 @@ export const INITIAL_CHARACTER: Character = {
   name: '',
   concept: '',
   classId: null,
+  subclassId: null,
   scoreMethod: null,
   abilityScores: { ...DEFAULT_ABILITY_SCORES },
   rolledScores: null,
@@ -46,4 +53,6 @@ export const INITIAL_CHARACTER: Character = {
   talentId: null,
   equipmentMethod: null,
   gold: null,
+  armorId: null,
+  shield: false,
 }

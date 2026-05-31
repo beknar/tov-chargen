@@ -520,6 +520,107 @@ button:disabled {
   color: var(--accent);
 }
 
+/* ---- Talent catalog ---- */
+
+.talent-catalog {
+  margin-top: 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.6rem 0.9rem;
+  background: var(--bg);
+}
+.talent-catalog summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+}
+.talent-cat h4 {
+  margin: 0.9rem 0 0.4rem;
+}
+.talent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+.talent-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  color: var(--fg);
+}
+.talent-row:hover {
+  border-color: var(--accent);
+}
+.talent-row.selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: var(--accent-soft);
+}
+.talent-row-name {
+  font-weight: 700;
+  color: var(--accent);
+}
+.talent-row-prereq {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.talent-row-desc {
+  display: block;
+  font-size: 0.88rem;
+  margin-top: 0.15rem;
+}
+
+/* ---- Armor / AC ---- */
+
+.armor-block {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+.armor-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+}
+.armor-controls .field {
+  flex: 1 1 16rem;
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-bottom: 0.5rem;
+}
+.checkbox input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+.ac-badge {
+  text-align: center;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  background: var(--accent-soft);
+}
+.ac-source {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.subclass-tag {
+  color: var(--muted);
+  font-weight: 400;
+}
+
 /* ---- Review / character sheet ---- */
 
 .review-warning {

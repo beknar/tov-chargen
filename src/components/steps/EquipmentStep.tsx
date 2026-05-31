@@ -1,6 +1,7 @@
 import { rollStartingGold } from '../../data/abilityScoreMethods'
 import { getClass } from '../../data/classes'
 import { getBackground } from '../../data/backgrounds'
+import { ARMORS, computeAC } from '../../data/armor'
 import { useCharacter } from '../../state/CharacterContext'
 
 export function EquipmentStep() {
@@ -8,9 +9,48 @@ export function EquipmentStep() {
   const cls = getClass(character.classId)
   const background = getBackground(character.backgroundId)
   const method = character.equipmentMethod
+  const ac = computeAC(character.abilityScores, character.classId, character.armorId, character.shield)
 
   return (
     <div className="equipment-step">
+      <section className="armor-block">
+        <h3>Armor & AC</h3>
+        <div className="armor-controls">
+          <label className="field">
+            <span className="field-label">Armor</span>
+            <select
+              value={character.armorId ?? ''}
+              onChange={(e) => patch({ armorId: e.target.value || null })}
+            >
+              <option value="">No armor (unarmored)</option>
+              {(['light', 'medium', 'heavy'] as const).map((c) => (
+                <optgroup key={c} label={`${c[0].toUpperCase()}${c.slice(1)} armor`}>
+                  {ARMORS.filter((a) => a.category === c).map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name} (AC {a.baseAC}
+                      {a.category === 'light' ? ' + DEX' : a.category === 'medium' ? ' + DEX, max 2' : ''})
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={character.shield}
+              onChange={(e) => patch({ shield: e.target.checked })}
+            />
+            <span>Shield (+2)</span>
+          </label>
+          <div className="ac-badge">
+            <span className="stat-label">Armor Class</span>
+            <span className="stat-value">{ac.ac}</span>
+            <span className="ac-source">{ac.source}</span>
+          </div>
+        </div>
+      </section>
+
       <fieldset className="method-picker">
         <legend>Method</legend>
         <div className="method-options">
