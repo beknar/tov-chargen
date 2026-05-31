@@ -30,6 +30,7 @@ export function ClassStep() {
                   cantrips: [],
                   spells: [],
                   multiclasses: character.multiclasses.filter((m) => m !== cls.id),
+                  equipmentChoices: {},
                 })
               }}
             >

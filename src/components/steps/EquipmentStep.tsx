@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { rollStartingGold } from '../../data/abilityScoreMethods'
 import { getClass, type ClassDef } from '../../data/classes'
 import { getBackground, type BackgroundDef } from '../../data/backgrounds'
-import { ARMORS, computeAC } from '../../data/armor'
+import { ARMORS, computeAC, getArmor } from '../../data/armor'
 import { SHOP, getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { MagicItemPicker } from '../MagicItemPicker'
 import { useCharacter } from '../../state/CharacterContext'
@@ -14,6 +14,9 @@ export function EquipmentStep() {
   const background = getBackground(character.backgroundId)
   const method = character.equipmentMethod
   const ac = computeAC(character.abilityScores, character.classId, character.armorId, character.shield)
+  const armor = getArmor(character.armorId)
+  const strShort =
+    armor?.strReq != null && character.abilityScores.str < armor.strReq ? armor.strReq : null
 
   return (
     <div className="equipment-step">
@@ -53,6 +56,11 @@ export function EquipmentStep() {
             <span className="ac-source">{ac.source}</span>
           </div>
         </div>
+        {strShort !== null && (
+          <p className="over feature-note">
+            This armor needs STR {strShort}; with lower STR your speed drops by 10 ft.
+          </p>
+        )}
       </section>
 
       <fieldset className="method-picker">

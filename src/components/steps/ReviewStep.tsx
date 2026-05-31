@@ -17,7 +17,7 @@ import { getTalent } from '../../data/talents'
 import { SKILLS } from '../../data/skills'
 import { getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { getMagicItem } from '../../data/magicItems'
-import { INITIAL_CHARACTER, type Character } from '../../state/types'
+import { sanitizeCharacter, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
 const PROFICIENCY_BONUS = 2
@@ -80,10 +80,7 @@ export function ReviewStep() {
     const reader = new FileReader()
     reader.onload = () => {
       try {
-        const data = JSON.parse(String(reader.result)) as Partial<Character>
-        if (data && typeof data === 'object') {
-          patch({ ...INITIAL_CHARACTER, ...data })
-        }
+        patch(sanitizeCharacter(JSON.parse(String(reader.result))))
       } catch {
         alert('That file is not a valid character export.')
       }

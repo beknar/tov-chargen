@@ -1,4 +1,4 @@
-import type { Ability } from '../data/abilities'
+import { ABILITIES, type Ability } from '../data/abilities'
 import type { ScoreMethod } from '../data/abilityScoreMethods'
 
 export type AbilityScores = Record<Ability, number>
@@ -79,4 +79,57 @@ export const INITIAL_CHARACTER: Character = {
   magicItems: [],
   armorId: null,
   shield: false,
+}
+
+export function freshCharacter(): Character {
+  return { ...INITIAL_CHARACTER, abilityScores: { ...DEFAULT_ABILITY_SCORES } }
+}
+
+/** Coerce arbitrary parsed data (e.g. an imported file or old save) into a
+ *  valid Character, dropping anything malformed. */
+export function sanitizeCharacter(data: unknown): Character {
+  const out = freshCharacter()
+  if (!data || typeof data !== 'object') return out
+  const d = data as Record<string, unknown>
+  const str = (k: keyof Character) => {
+    if (typeof d[k] === 'string') (out[k] as string) = d[k] as string
+  }
+  str('name')
+  str('concept')
+  for (const k of [
+    'classId', 'subclassId', 'scoreMethod', 'talentId', 'lineageId', 'heritageId',
+    'backgroundId', 'armorId', 'equipmentMethod',
+  ] as const) {
+    if (typeof d[k] === 'string') (out[k] as string | null) = d[k] as string
+  }
+  for (const k of [
+    'multiclasses', 'classSkills', 'backgroundSkills', 'cantrips', 'spells', 'magicItems',
+  ] as const) {
+    if (Array.isArray(d[k])) out[k] = (d[k] as unknown[]).filter((x): x is string => typeof x === 'string')
+  }
+  if (typeof d.gold === 'number') out.gold = d.gold
+  if (typeof d.shield === 'boolean') out.shield = d.shield
+  if (Array.isArray(d.rolledScores)) {
+    out.rolledScores = (d.rolledScores as unknown[]).filter((x): x is number => typeof x === 'number')
+  }
+  if (d.abilityScores && typeof d.abilityScores === 'object') {
+    const a = d.abilityScores as Record<string, unknown>
+    for (const ab of ABILITIES) if (typeof a[ab] === 'number') out.abilityScores[ab] = a[ab] as number
+  }
+  if (Array.isArray(d.purchases)) {
+    out.purchases = (d.purchases as unknown[])
+      .filter((p): p is { id: string; qty: number } =>
+        !!p && typeof p === 'object' &&
+        typeof (p as Record<string, unknown>).id === 'string' &&
+        typeof (p as Record<string, unknown>).qty === 'number')
+      .map((p) => ({ id: p.id, qty: p.qty }))
+  }
+  if (d.equipmentChoices && typeof d.equipmentChoices === 'object') {
+    const ec: Record<string, number> = {}
+    for (const [k, v] of Object.entries(d.equipmentChoices as Record<string, unknown>)) {
+      if (typeof v === 'number') ec[k] = v
+    }
+    out.equipmentChoices = ec
+  }
+  return out
 }

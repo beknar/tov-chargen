@@ -6,7 +6,7 @@ import {
   useReducer,
   type ReactNode,
 } from 'react'
-import { INITIAL_CHARACTER, type Character } from './types'
+import { freshCharacter, sanitizeCharacter, type Character } from './types'
 
 const STORAGE_KEY = 'tov-chargen:character'
 
@@ -17,21 +17,19 @@ function reducer(state: Character, action: Action): Character {
     case 'patch':
       return { ...state, ...action.patch }
     case 'reset':
-      return { ...INITIAL_CHARACTER, abilityScores: { ...INITIAL_CHARACTER.abilityScores } }
+      return freshCharacter()
   }
 }
 
 function loadInitial(): Character {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      // Shallow-merge over defaults so new fields added later don't break old saves.
-      return { ...INITIAL_CHARACTER, ...(JSON.parse(raw) as Partial<Character>) }
-    }
+    // sanitizeCharacter fills missing fields from defaults and drops bad data.
+    if (raw) return sanitizeCharacter(JSON.parse(raw))
   } catch {
     // Corrupt or unavailable storage — fall back to a fresh character.
   }
-  return { ...INITIAL_CHARACTER, abilityScores: { ...INITIAL_CHARACTER.abilityScores } }
+  return freshCharacter()
 }
 
 interface CharacterStore {

@@ -74,7 +74,8 @@ directly in a browser, independent of the app.
 - Step wizard shell with navigation and a live character summary
 - **Concept**
 - **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies,
-  notable 1st-level features, and **subclass selection** (all 27 subclasses)
+  notable 1st-level features, **subclass selection** (all 27 subclasses), and **optional
+  multiclassing** with ability-score prerequisite gating
 - **Ability Scores** — standard array, point-buy with the full 32-point cost table, and
   4d6-drop-lowest rolling
 - **Lineage** — all 8 lineages with size, speed, and traits
@@ -85,7 +86,11 @@ directly in a browser, independent of the app.
   into real picks, with cross-source duplicate prevention and computed skill bonuses on the
   sheet
 - **Spells** — caster classes pick cantrips and 1st-circle spells from their source's list
-  (Arcane / Divine / Primordial / Wyrd; 324-spell database); non-casters get a skip notice
+  (Arcane / Divine / Primordial / Wyrd; 324-spell database with full effect text and
+  per-class cantrip guidance); non-casters get a skip notice
+- **Magic items** — optional, filterable 214-item catalog (type, rarity, attunement, text)
+- **Robust save/load** — imported files and old saves are sanitized so malformed data can't
+  corrupt the character state
 - **Equipment** — Method 1: pick your class's (a)/(b) gear options interactively; Method 2:
   roll starting wealth (5d4 × 10 gp) and **buy from a priced shop** (armor, 37 weapons,
   packs, 87 gear items) with a live wallet and filter. Plus **armor selection and AC**
@@ -129,7 +134,10 @@ python3 convert.py 13 19      # optional page range, for testing
 - [x] Armor / Unarmored Defense AC model
 - [x] Interactive skill selection (class + background, with cross-source dedup and bonuses)
 - [x] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
-- [x] Spell selection for casters (cantrips + 1st-circle by source)
+- [x] Spell selection for casters (cantrips + 1st-circle by source, with effect text)
+- [x] Magic items catalog (optional)
+- [x] Optional multiclassing (prerequisite-gated)
+- [x] Hardened save/load (sanitized import + migration of old saves)
 
 ## Attribution & licensing
 
