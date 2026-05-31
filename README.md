@@ -72,11 +72,12 @@ directly in a browser, independent of the app.
 ### What's implemented
 
 - Step wizard shell with navigation and a live character summary
-- **Concept**, **Class** (all 11 classes), and **Ability Scores** (standard array,
-  point-buy with the full 32-point cost table, and 4d6-drop-lowest rolling) steps
+- **Concept**, **Class** (all 11 classes), **Ability Scores** (standard array, point-buy
+  with the full 32-point cost table, and 4d6-drop-lowest rolling), and **Lineage** (all 8
+  lineages with size, speed, and traits) steps
 - Character state persisted to `localStorage`
 
-Lineage, heritage, background, equipment, and review are stubbed placeholders — see the
+Heritage, background, equipment, and review are stubbed placeholders — see the
 [roadmap](#roadmap).
 
 ## The rules reference

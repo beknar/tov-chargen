@@ -1,7 +1,6 @@
 import { STEPS } from '../../data/steps'
 
 const NOTES: Record<string, string> = {
-  lineage: 'Lineage selection (ancestry traits) will go here.',
   heritage: 'Heritage selection (cultural upbringing) will go here.',
   background: 'Background selection (skills, talents, starting gear) will go here.',
   equipment: 'Starting equipment — take class + background gear, or roll wealth and buy.',

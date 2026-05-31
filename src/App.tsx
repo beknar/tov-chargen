@@ -6,6 +6,7 @@ import { CharacterSummary } from './components/CharacterSummary'
 import { ConceptStep } from './components/steps/ConceptStep'
 import { ClassStep } from './components/steps/ClassStep'
 import { AbilityScoresStep } from './components/steps/AbilityScoresStep'
+import { LineageStep } from './components/steps/LineageStep'
 import { PlaceholderStep } from './components/steps/PlaceholderStep'
 
 function renderStep(stepId: string) {
@@ -16,6 +17,8 @@ function renderStep(stepId: string) {
       return <ClassStep />
     case 'abilities':
       return <AbilityScoresStep />
+    case 'lineage':
+      return <LineageStep />
     default:
       return <PlaceholderStep stepId={stepId} />
   }

@@ -439,6 +439,35 @@ button:disabled {
   margin-bottom: 0;
 }
 
+/* ---- Lineage detail ---- */
+
+.choice-traits {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.detail {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.detail h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+.trait-list {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+.trait dt {
+  font-weight: 700;
+  color: var(--accent);
+}
+.trait dd {
+  margin: 0.1rem 0 0;
+}
+
 /* ---- Placeholder ---- */
 
 .placeholder {
