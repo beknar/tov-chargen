@@ -25,7 +25,7 @@ The tool follows the official 8-step character creation sequence from the Player
 | 7 | Take starting equipment (class + background) or roll starting wealth and buy gear |
 | 8 | Fill in the blanks — derive HP, proficiency bonus, modifiers, and finish the sheet |
 
-Spellcasting classes additionally select spells.
+Spellcasting classes additionally select spells (a dedicated **Spells** step).
 
 ## Tech stack
 
@@ -84,6 +84,8 @@ directly in a browser, independent of the app.
 - **Interactive skill selection** — class and background "choose N from…" grants resolved
   into real picks, with cross-source duplicate prevention and computed skill bonuses on the
   sheet
+- **Spells** — caster classes pick cantrips and 1st-circle spells from their source's list
+  (Arcane / Divine / Primordial / Wyrd; 324-spell database); non-casters get a skip notice
 - **Equipment** — Method 1: pick your class's (a)/(b) gear options interactively; Method 2:
   roll starting wealth (5d4 × 10 gp) and **buy from a priced shop** (armor, 37 weapons,
   packs, 87 gear items) with a live wallet and filter. Plus **armor selection and AC**
@@ -127,7 +129,7 @@ python3 convert.py 13 19      # optional page range, for testing
 - [x] Armor / Unarmored Defense AC model
 - [x] Interactive skill selection (class + background, with cross-source dedup and bonuses)
 - [x] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
-- [ ] Spell selection for casters
+- [x] Spell selection for casters (cantrips + 1st-circle by source)
 
 ## Attribution & licensing
 

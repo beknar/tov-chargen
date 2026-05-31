@@ -242,6 +242,22 @@ export function ReviewStep() {
           </section>
         )}
 
+        {(character.cantrips.length > 0 || character.spells.length > 0) && (
+          <section className="sheet-block">
+            <h3>Spells</h3>
+            {character.cantrips.length > 0 && (
+              <p>
+                <strong>Cantrips:</strong> {[...character.cantrips].sort().join(', ')}
+              </p>
+            )}
+            {character.spells.length > 0 && (
+              <p>
+                <strong>1st Circle:</strong> {[...character.spells].sort().join(', ')}
+              </p>
+            )}
+          </section>
+        )}
+
         {lineage && (
           <section className="sheet-block">
             <h3>Lineage — {lineage.name}</h3>

@@ -9,6 +9,7 @@ import { AbilityScoresStep } from './components/steps/AbilityScoresStep'
 import { LineageStep } from './components/steps/LineageStep'
 import { HeritageStep } from './components/steps/HeritageStep'
 import { BackgroundStep } from './components/steps/BackgroundStep'
+import { SpellStep } from './components/steps/SpellStep'
 import { EquipmentStep } from './components/steps/EquipmentStep'
 import { ReviewStep } from './components/steps/ReviewStep'
 
@@ -26,6 +27,8 @@ function renderStep(stepId: string) {
       return <HeritageStep />
     case 'background':
       return <BackgroundStep />
+    case 'spells':
+      return <SpellStep />
     case 'equipment':
       return <EquipmentStep />
     case 'review':

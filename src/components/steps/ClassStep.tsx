@@ -22,7 +22,7 @@ export function ClassStep() {
               className={`choice-card ${sel ? 'selected' : ''}`}
               onClick={() => {
                 if (cls.id === character.classId) return
-                patch({ classId: cls.id, subclassId: null, classSkills: [] })
+                patch({ classId: cls.id, subclassId: null, classSkills: [], cantrips: [], spells: [] })
               }}
             >
               <span className="choice-title">

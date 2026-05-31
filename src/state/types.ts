@@ -24,6 +24,10 @@ export interface Character {
   backgroundSkills: string[]
   /** Talent chosen from the background's options (talent name). */
   talentId: string | null
+  /** Chosen cantrips (spell names). */
+  cantrips: string[]
+  /** Chosen 1st-circle spells (spell names). */
+  spells: string[]
   /** Starting-equipment method: take granted gear, or roll for wealth. */
   equipmentMethod: 'granted' | 'wealth' | null
   /** Starting gold (Method 2), in gp. */
@@ -61,6 +65,8 @@ export const INITIAL_CHARACTER: Character = {
   classSkills: [],
   backgroundSkills: [],
   talentId: null,
+  cantrips: [],
+  spells: [],
   equipmentMethod: null,
   gold: null,
   equipmentChoices: {},

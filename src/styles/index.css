@@ -716,6 +716,55 @@ button:disabled {
   font-weight: 400;
 }
 
+/* ---- Spell selection ---- */
+
+.spell-group {
+  margin-top: 1rem;
+}
+.spell-group h3 {
+  margin: 0 0 0.5rem;
+}
+.spell-count {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+.spell-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 0.4rem;
+}
+.spell-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  color: var(--fg);
+}
+.spell-chip:hover {
+  border-color: var(--accent);
+}
+.spell-chip.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: var(--accent-soft);
+}
+.spell-name {
+  font-weight: 600;
+}
+.spell-school {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
 /* ---- Method 1: equipment choices ---- */
 
 .grant-list {
