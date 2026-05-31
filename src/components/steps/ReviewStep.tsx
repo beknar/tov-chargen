@@ -16,6 +16,7 @@ import { getBackground } from '../../data/backgrounds'
 import { getTalent } from '../../data/talents'
 import { SKILLS } from '../../data/skills'
 import { getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
+import { getMagicItem } from '../../data/magicItems'
 import { INITIAL_CHARACTER, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -348,6 +349,23 @@ export function ReviewStep() {
                 )}
               </>
             )}
+          </section>
+        )}
+
+        {character.magicItems.length > 0 && (
+          <section className="sheet-block">
+            <h3>Magic Items</h3>
+            <ul className="sheet-kv">
+              {character.magicItems.map((id) => {
+                const mi = getMagicItem(id)
+                if (!mi) return null
+                return (
+                  <li key={id}>
+                    {mi.name} <span className="muted">({mi.rarity}{mi.attunement ? ', attunement' : ''})</span>
+                  </li>
+                )
+              })}
+            </ul>
           </section>
         )}
       </article>

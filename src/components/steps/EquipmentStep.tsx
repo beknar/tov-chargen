@@ -4,6 +4,7 @@ import { getClass, type ClassDef } from '../../data/classes'
 import { getBackground, type BackgroundDef } from '../../data/backgrounds'
 import { ARMORS, computeAC } from '../../data/armor'
 import { SHOP, getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
+import { MagicItemPicker } from '../MagicItemPicker'
 import { useCharacter } from '../../state/CharacterContext'
 import type { Character } from '../../state/types'
 
@@ -81,6 +82,8 @@ export function EquipmentStep() {
       {method === 'granted' && <GrantedGear cls={cls} background={background} />}
       {method === 'wealth' && <Shop character={character} patch={patch} />}
       {!method && <p className="muted">Choose how to get your starting equipment.</p>}
+
+      <MagicItemPicker />
     </div>
   )
 }

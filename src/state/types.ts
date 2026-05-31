@@ -36,6 +36,8 @@ export interface Character {
   equipmentChoices: Record<string, number>
   /** Method 2: purchased shop items. */
   purchases: { id: string; qty: number }[]
+  /** Optional magic items added to the character (item ids). */
+  magicItems: string[]
   /** Equipped armor (armor id) for AC calculation. */
   armorId: string | null
   /** Whether a shield is equipped. */
@@ -71,6 +73,7 @@ export const INITIAL_CHARACTER: Character = {
   gold: null,
   equipmentChoices: {},
   purchases: [],
+  magicItems: [],
   armorId: null,
   shield: false,
 }

@@ -840,6 +840,73 @@ button:disabled {
   color: var(--bg);
 }
 
+/* ---- Magic items ---- */
+
+.magic-items {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.magic-items > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  font-size: 1.05rem;
+}
+.magic-items input[type='search'] {
+  width: 100%;
+  max-width: 22rem;
+  margin: 0.5rem 0;
+}
+.mi-list {
+  display: grid;
+  gap: 0.3rem;
+}
+.mi-item {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+}
+.mi-item.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.mi-item summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+.mi-item summary::-webkit-details-marker {
+  display: none;
+}
+.mi-name {
+  font-weight: 600;
+  flex: 1;
+}
+.mi-rarity {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--muted);
+}
+.mi-rarity.r-rare { color: #2b5fae; }
+.mi-rarity.r-very-rare { color: #7a2eae; }
+.mi-rarity.r-legendary { color: var(--accent); font-weight: 700; }
+.mi-meta {
+  margin: 0;
+  padding: 0 0.7rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
 /* ---- Method 2: shop ---- */
 
 .shop-bar {
