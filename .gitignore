@@ -1,0 +1,25 @@
+# Copyrighted Kobold Press rulebook — kept local, not published.
+# Place the PDF here locally and regenerate the HTML with convert.py.
+ToV-Players-Guide.pdf
+ToV-Players-Guide.html
+
+# Dependencies / build output
+node_modules/
+dist/
+build/
+.cache/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Environment / local
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
