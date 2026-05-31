@@ -29,18 +29,20 @@ export function CombatStep() {
 
   const inv = deriveInventory(character)
   const [showAll, setShowAll] = useState(false)
+  // Weapons kept visible in the picker: inventory + equipped + any toggled this
+  // session, so unchecking a weapon never removes it as a choice.
+  const [shown, setShown] = useState<string[]>(() => [
+    ...new Set([...inv.weaponIds, ...character.equippedWeapons]),
+  ])
 
   function toggleWeapon(id: string) {
+    setShown((s) => (s.includes(id) ? s : [...s, id]))
     const cur = character.equippedWeapons
     patch({ equippedWeapons: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id] })
   }
 
-  // weapons available to equip: the character's inventory (or all, on request).
-  // Anything already equipped stays visible so it can be unequipped.
   const q = query.trim().toLowerCase()
-  const available = WEAPONS.filter(
-    (w) => showAll || inv.weaponIds.includes(w.id) || character.equippedWeapons.includes(w.id),
-  )
+  const available = WEAPONS.filter((w) => showAll || shown.includes(w.id))
   const list = available.filter((w) => !q || w.name.toLowerCase().includes(q))
 
   return (
@@ -86,7 +88,13 @@ export function CombatStep() {
         aren’t proficient with (no proficiency bonus). Versatile damage shows the two-handed die.
       </p>
 
-      <GearPanel inv={inv} armorId={character.armorId} />
+      <GearPanel
+        inv={inv}
+        armorId={character.armorId}
+        shield={character.shield}
+        onWear={(id) => patch({ armorId: character.armorId === id ? null : id })}
+        onShield={(v) => patch({ shield: v })}
+      />
 
       <h3>Equip weapons</h3>
       <p className="muted feature-note">
@@ -139,15 +147,24 @@ export function CombatStep() {
 function GearPanel({
   inv,
   armorId,
+  shield,
+  onWear,
+  onShield,
 }: {
   inv: ReturnType<typeof deriveInventory>
   armorId: string | null
+  shield: boolean
+  onWear: (id: string) => void
+  onShield: (value: boolean) => void
 }) {
   const hasGear = inv.armorIds.length > 0 || inv.hasShield || inv.magicItemIds.length > 0
   if (!hasGear) return null
   return (
     <>
-      <h3>Worn & carried</h3>
+      <h3>Worn &amp; carried</h3>
+      {(inv.armorIds.length > 0 || inv.hasShield) && (
+        <p className="muted feature-note">Check armor or a shield to wear it — your AC updates above.</p>
+      )}
       <ul className="gear-panel">
         {inv.armorIds.map((id) => {
           const a = getArmor(id)
@@ -155,14 +172,25 @@ function GearPanel({
           const worn = id === armorId
           return (
             <li key={id}>
-              {a.name} <span className="muted">(armor, AC {a.baseAC})</span>
+              <label className="gear-toggle">
+                <input type="checkbox" checked={worn} onChange={() => onWear(id)} />
+                <span>
+                  {a.name} <span className="muted">(armor, AC {a.baseAC})</span>
+                </span>
+              </label>
               {worn && <span className="worn-tag">worn</span>}
             </li>
           )
         })}
         {inv.hasShield && (
           <li>
-            Shield <span className="muted">(+2 AC)</span>
+            <label className="gear-toggle">
+              <input type="checkbox" checked={shield} onChange={(e) => onShield(e.target.checked)} />
+              <span>
+                Shield <span className="muted">(+2 AC)</span>
+              </span>
+            </label>
+            {shield && <span className="worn-tag">worn</span>}
           </li>
         )}
         {inv.magicItemIds.map((id) => {

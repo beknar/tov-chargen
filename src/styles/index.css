@@ -824,6 +824,16 @@ button:disabled {
   align-items: center;
   gap: 0.5rem;
 }
+.gear-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+.gear-toggle input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
 .worn-tag {
   font-size: 0.68rem;
   text-transform: uppercase;
