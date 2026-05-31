@@ -29,25 +29,20 @@ Spellcasting classes additionally select spells.
 
 ## Tech stack
 
-A modern client-side web app. Use whatever tooling best fits a form-heavy, data-driven
-SPA — a component framework, a build tool, and TypeScript are all welcome. The app stays
-**fully client-side** (no backend required) so it can be deployed to any static host
-(GitHub Pages, Netlify, Vercel, S3, etc.), with state persisted in the browser.
-
-**Recommended default** (not yet locked in): [Vite](https://vitejs.dev) + **TypeScript**
-+ a component framework (React, Vue, or Svelte). The character model has lots of
-interdependent state — ability scores → modifiers, class → proficiencies, lineage/heritage
-→ traits — so a component framework with real state management is a good fit. The
-framework can be chosen when the app is scaffolded.
+**[Vite](https://vitejs.dev) + [React](https://react.dev) + TypeScript.** The app is
+fully **client-side** (no backend) and builds to a static bundle deployable to any static
+host (GitHub Pages, Netlify, Vercel, S3, etc.). Character state lives in a React context
+store and is persisted to `localStorage`. Game rules are encoded as typed data modules in
+`src/data/` so the UI renders from data rather than hard-coded rules.
 
 ## Getting started
 
-Once the app is scaffolded with a build tool:
-
 ```bash
 npm install
-npm run dev        # start the dev server (Vite default: http://localhost:5173)
-npm run build      # produce the static production bundle
+npm run dev        # dev server with HMR (http://localhost:5173)
+npm run build      # typecheck + produce the static bundle in dist/
+npm run preview    # serve the production build locally
+npm run typecheck  # type-check without emitting
 ```
 
 The rules reference (`ToV-Players-Guide.html`) is a plain static file you can open
@@ -55,23 +50,34 @@ directly in a browser, independent of the app.
 
 ## Project structure
 
-Expected layout once scaffolded (adjust to the chosen framework):
-
 ```
 .
-├── index.html              # app entry point
+├── index.html                  # Vite entry point
 ├── src/
-│   ├── main.*              # app bootstrap
-│   ├── components/         # UI components / wizard steps
-│   ├── state/              # character model & creation-flow state
-│   └── styles/             # styling
-├── data/                   # rules encoded as data: classes, lineages,
-│                           #   heritages, backgrounds, equipment, spells
-├── public/                 # static assets served as-is
-├── ToV-Players-Guide.html  # full rules reference (generated from the PDF)
-├── ToV-Players-Guide.pdf   # original source rulebook
-└── convert.py              # PDF → single-column HTML converter
+│   ├── main.tsx                # app bootstrap (mounts <App/> in the store provider)
+│   ├── App.tsx                 # wizard shell + step routing
+│   ├── components/
+│   │   ├── StepNav.tsx         # step navigation
+│   │   ├── CharacterSummary.tsx# live derived-stats panel
+│   │   └── steps/              # one component per creation step
+│   ├── state/                  # character model (types.ts) + context store
+│   ├── data/                   # rules as typed data: abilities, classes,
+│   │                           #   ability-score methods, step definitions
+│   └── styles/                 # global stylesheet
+├── ToV-Players-Guide.html      # rules reference (generated; gitignored)
+├── ToV-Players-Guide.pdf       # original source rulebook (gitignored)
+└── convert.py                  # PDF → single-column HTML converter
 ```
+
+### What's implemented
+
+- Step wizard shell with navigation and a live character summary
+- **Concept**, **Class** (all 11 classes), and **Ability Scores** (standard array,
+  point-buy with the full 32-point cost table, and 4d6-drop-lowest rolling) steps
+- Character state persisted to `localStorage`
+
+Lineage, heritage, background, equipment, and review are stubbed placeholders — see the
+[roadmap](#roadmap).
 
 ## The rules reference
 

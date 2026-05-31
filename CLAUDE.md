@@ -8,39 +8,53 @@ A browser-based **character creation tool for the Tales of the Valiant (ToV) RPG
 guides a player through building a 1st-level character and produces a finished sheet. The
 game rules live in `ToV-Players-Guide.html` (see below).
 
-This is a **greenfield project**: as of now the repo contains the rules reference and the
-PDF→HTML converter, but little or no application code yet. Expect to be creating the app
-structure, not just modifying it.
+The app is **scaffolded and building** (Vite + React + TypeScript). The wizard shell,
+character store, and the Concept / Class / Ability Scores steps are implemented; the
+remaining steps (lineage, heritage, background, equipment, review) are placeholder
+components to be built out.
 
 ## Tech stack
 
-Use whatever modern web technologies are appropriate for a form-heavy, data-driven SPA.
-Frameworks, a build step, and TypeScript are all fine. The constraints that still apply:
+**Vite + React 18 + TypeScript** (strict). No backend. The constraints that apply:
 
-- **Fully client-side.** No backend or database — the app must run as a static bundle on
-  any static host. Persistence is client-side (localStorage / file export).
-- **Data-driven.** Encode rules as data (in `data/`) and render UI from it; don't
-  hard-code rules inside view/component logic.
+- **Fully client-side.** Builds to a static bundle (`npm run build` → `dist/`) deployable
+  to any static host. Persistence is client-side (`localStorage`; file export later).
+- **Data-driven.** Rules live as typed data in `src/data/`; components render from that
+  data and never hard-code rules. New rules content goes in `src/data/`.
 - **Modern evergreen browsers** are the target. Accessibility is required (see below).
-
-**Recommended default** (confirm with the user before locking it in): Vite + TypeScript +
-a component framework (React, Vue, or Svelte). TypeScript is worth it here for modeling
-the rules domain (abilities, classes, etc.). If you scaffold the project, state the exact
-stack you chose and why. Add dependencies as needed — but keep the footprint reasonable
-and prefer well-maintained, mainstream libraries.
+- Keep the dependency footprint small. The store is plain React context + `useReducer`
+  (`src/state/CharacterContext.tsx`) — don't add a state library unless it's justified.
+  Prefer mainstream, well-maintained packages and get the change reviewed if it's large.
 
 ## Repository layout
 
 ```
-index.html              # app entry point (create this)
-src/                    # app source (components, state, styles) — per chosen framework
-data/                   # rules as data: classes, lineages, heritages,
-                        #   backgrounds, talents, equipment, spells
-public/                 # static assets served as-is
-ToV-Players-Guide.html  # GENERATED rules reference (~11 MB) — do not hand-edit
-ToV-Players-Guide.pdf   # original rulebook (source of the HTML)
+index.html              # Vite entry point
+src/
+  main.tsx              # bootstrap
+  App.tsx               # wizard shell + step routing (current step in local state)
+  components/           # StepNav, CharacterSummary, steps/<Step>.tsx
+  state/                # types.ts (Character model) + CharacterContext.tsx (store)
+  data/                 # abilities, classes, abilityScoreMethods, steps (typed rules)
+  styles/index.css      # global styles (parchment theme, light/dark)
+ToV-Players-Guide.html  # GENERATED rules reference (~11 MB) — gitignored, do not hand-edit
+ToV-Players-Guide.pdf   # original rulebook (source of the HTML) — gitignored
 convert.py              # PDF → single-column HTML converter (PyMuPDF)
 ```
+
+## How the app is wired
+
+- **Store:** `src/state/CharacterContext.tsx` exposes `useCharacter()` →
+  `{ character, patch, reset }`. `patch(partial)` shallow-merges into the character;
+  state auto-persists to `localStorage` (key `tov-chargen:character`).
+- **Character model:** `src/state/types.ts`. When adding a field, also add it to
+  `INITIAL_CHARACTER`; the store shallow-merges saved data over defaults so old saves
+  don't break.
+- **Steps:** defined in `src/data/steps.ts`; `App.tsx` maps a step id to its component.
+  New steps = add a `data/steps.ts` entry + a `components/steps/<Step>.tsx`, and wire it
+  in `App.renderStep`. Follow the data-driven pattern in `ClassStep`/`AbilityScoresStep`.
+- **Rules helpers:** ability modifier, point-buy costs, standard array, and 4d6 rolling
+  live in `src/data/`. Reuse them; don't re-derive rules inline.
 
 ## The rules reference
 
@@ -96,12 +110,17 @@ Key rules constants to encode and respect:
 
 ## Running & previewing
 
-Once the app is scaffolded, use the chosen tool's dev server (e.g. `npm run dev`) and its
-production build (`npm run build`). The rules reference HTML is a static file and can be
-opened directly.
+```bash
+npm install
+npm run dev        # dev server with HMR
+npm run build      # tsc --noEmit + vite build → dist/ (run this to verify changes compile)
+npm run preview    # serve the production build
+npm run typecheck  # type-check only
+```
 
-Set up tests/lint as appropriate for the stack. Configure them when you scaffold rather
-than bolting them on later.
+`npm run build` runs a strict type-check first — use it as the basic "did I break
+anything" gate. There is no test runner or linter configured yet; if you add one, keep it
+mainstream (e.g. Vitest) and wire it into a script.
 
 ## Gotchas
 

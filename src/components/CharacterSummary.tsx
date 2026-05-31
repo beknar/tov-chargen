@@ -1,0 +1,69 @@
+import {
+  ABILITIES,
+  ABILITY_ABBR,
+  abilityModifier,
+  formatModifier,
+} from '../data/abilities'
+import { getClass } from '../data/classes'
+import { useCharacter } from '../state/CharacterContext'
+
+/** Proficiency bonus is +2 at 1st level. */
+const PROFICIENCY_BONUS = 2
+
+export function CharacterSummary() {
+  const { character } = useCharacter()
+  const cls = getClass(character.classId)
+  const conMod = abilityModifier(character.abilityScores.con)
+  const startingHp = cls ? cls.hitDie + conMod : null
+
+  return (
+    <div className="summary">
+      <h2>Summary</h2>
+
+      <dl className="summary-meta">
+        <div>
+          <dt>Name</dt>
+          <dd>{character.name || <span className="muted">—</span>}</dd>
+        </div>
+        <div>
+          <dt>Class</dt>
+          <dd>{cls ? cls.name : <span className="muted">—</span>}</dd>
+        </div>
+        <div>
+          <dt>Hit Points</dt>
+          <dd>{startingHp !== null ? startingHp : <span className="muted">—</span>}</dd>
+        </div>
+        <div>
+          <dt>Proficiency</dt>
+          <dd>{formatModifier(PROFICIENCY_BONUS)}</dd>
+        </div>
+      </dl>
+
+      <table className="summary-abilities">
+        <thead>
+          <tr>
+            <th scope="col">Ability</th>
+            <th scope="col">Score</th>
+            <th scope="col">Mod</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ABILITIES.map((a) => {
+            const score = character.abilityScores[a]
+            return (
+              <tr key={a}>
+                <th scope="row">{ABILITY_ABBR[a]}</th>
+                <td>{score}</td>
+                <td>{formatModifier(abilityModifier(score))}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+      <p className="summary-note muted">
+        HP shown is a 1st-level estimate (max hit die + CON modifier).
+      </p>
+    </div>
+  )
+}
