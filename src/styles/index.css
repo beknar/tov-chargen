@@ -520,8 +520,159 @@ button:disabled {
   color: var(--accent);
 }
 
-/* ---- Placeholder ---- */
+/* ---- Review / character sheet ---- */
 
-.placeholder {
-  padding: 1rem 0;
+.review-warning {
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 0.92em;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+.character-sheet {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: 1.5rem;
+}
+.sheet-head {
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1rem;
+}
+.sheet-head h2 {
+  margin: 0;
+}
+.sheet-sub {
+  margin: 0.2rem 0 0;
+  font-weight: 600;
+  color: var(--muted);
+}
+.sheet-concept {
+  margin: 0.5rem 0 0;
+  font-style: italic;
+}
+.sheet-block {
+  margin-top: 1.25rem;
+}
+.sheet-block h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.2rem;
+}
+.sheet-abilities {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.sheet-abilities th,
+.sheet-abilities td {
+  border: 1px solid var(--rule);
+  padding: 0.3rem 0.6rem;
+  text-align: center;
+}
+.sheet-abilities tbody th {
+  text-align: left;
+}
+.sheet-abilities thead th {
+  background: var(--accent-soft);
+  font-size: 0.85rem;
+}
+.sheet-abilities td.prof {
+  font-weight: 700;
+}
+.prof-dot {
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-left: 0.3rem;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: middle;
+}
+.sheet-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+.sheet-stats > div {
+  flex: 1 1 5rem;
+  text-align: center;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.5rem;
+  background: var(--panel);
+}
+.stat-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.stat-value {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.sheet-kv {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.25rem;
+}
+.sheet-features {
+  margin: 0.6rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.sheet-features dt {
+  font-weight: 700;
+  color: var(--accent);
+}
+.sheet-features dd {
+  margin: 0.1rem 0 0;
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .app-header,
+  .step-nav,
+  .step-controls,
+  .summary-panel,
+  .step-head,
+  .review-warning,
+  .no-print {
+    display: none !important;
+  }
+  .layout {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+  .step {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  .character-sheet {
+    border: 0;
+    padding: 0;
+  }
+  .sheet-block {
+    break-inside: avoid;
+  }
 }

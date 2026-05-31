@@ -10,7 +10,7 @@ import { LineageStep } from './components/steps/LineageStep'
 import { HeritageStep } from './components/steps/HeritageStep'
 import { BackgroundStep } from './components/steps/BackgroundStep'
 import { EquipmentStep } from './components/steps/EquipmentStep'
-import { PlaceholderStep } from './components/steps/PlaceholderStep'
+import { ReviewStep } from './components/steps/ReviewStep'
 
 function renderStep(stepId: string) {
   switch (stepId) {
@@ -28,8 +28,10 @@ function renderStep(stepId: string) {
       return <BackgroundStep />
     case 'equipment':
       return <EquipmentStep />
+    case 'review':
+      return <ReviewStep />
     default:
-      return <PlaceholderStep stepId={stepId} />
+      return <ReviewStep />
   }
 }
 

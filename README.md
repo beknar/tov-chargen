@@ -82,9 +82,12 @@ directly in a browser, independent of the app.
 - **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a choice
   of one talent from the background's options
 - **Equipment** — take granted class + background gear, or roll starting wealth (5d4 × 10 gp)
+- **Review** — assembled character sheet (abilities with save bonuses, derived HP/speed,
+  class/lineage/heritage/background features and traits, equipment) with **JSON
+  export/import** and **print / save-to-PDF**
 - Character state persisted to `localStorage`
 
-Review is the only remaining stubbed placeholder — see the [roadmap](#roadmap).
+All eight creation steps are implemented end to end.
 
 ## The rules reference
 
@@ -107,13 +110,17 @@ python3 convert.py 13 19      # optional page range, for testing
 
 ## Roadmap
 
-- [ ] App shell (`index.html`) and step-wizard navigation
-- [ ] Ability score generator (all three methods, with the point-buy cost table)
-- [ ] Class, lineage, heritage, and background selection screens
-- [ ] Equipment / starting wealth
+- [x] App shell (`index.html`) and step-wizard navigation
+- [x] Ability score generator (all three methods, with the point-buy cost table)
+- [x] Class, lineage, heritage, and background selection screens
+- [x] Equipment / starting wealth
+- [x] Derived stats (HP, proficiency bonus, save bonuses)
+- [x] Character sheet view + save/load (JSON export/import, print)
+- [ ] Interactive skill selection (resolve "choose two from…" into picks)
+- [ ] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
 - [ ] Spell selection for casters
-- [ ] Derived stats (HP, proficiency bonus, saves, skills)
-- [ ] Character sheet view + save/load (export to JSON, print)
+- [ ] Full talents browser (all Magic / Martial / Technical talents)
+- [ ] Subclass selection
 
 ## Attribution & licensing
 
