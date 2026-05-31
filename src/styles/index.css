@@ -716,6 +716,150 @@ button:disabled {
   font-weight: 400;
 }
 
+/* ---- Method 1: equipment choices ---- */
+
+.grant-list {
+  list-style: none;
+  margin: 0.5rem 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.grant-fixed {
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px dashed var(--rule);
+}
+.grant-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.opt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  color: var(--fg);
+  flex: 1 1 14rem;
+}
+.opt-chip:hover {
+  border-color: var(--accent);
+}
+.opt-chip.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: var(--accent-soft);
+}
+.opt-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.opt-chip.on .opt-letter {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ---- Method 2: shop ---- */
+
+.shop-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.wallet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  align-items: center;
+}
+.wallet strong {
+  color: var(--accent);
+}
+.wallet .over strong {
+  color: var(--bad);
+}
+.shop-bar input {
+  flex: 1 1 10rem;
+  max-width: 16rem;
+}
+button.small {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+}
+.shop-cat h4 {
+  margin: 1rem 0 0.4rem;
+}
+.shop-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+.shop-list li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+}
+.shop-list li.in-cart {
+  background: var(--accent-soft);
+}
+.shop-note {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+.shop-price {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.shop-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.shop-qty button {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 5px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+.shop-qty button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.shop-qty span {
+  min-width: 1.2ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---- Review / character sheet ---- */
 
 .review-warning {

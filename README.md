@@ -84,8 +84,10 @@ directly in a browser, independent of the app.
 - **Interactive skill selection** — class and background "choose N from…" grants resolved
   into real picks, with cross-source duplicate prevention and computed skill bonuses on the
   sheet
-- **Equipment** — take granted class + background gear or roll starting wealth (5d4 × 10 gp),
-  plus **armor selection and AC** (armor table + Unarmored Defense for Barbarian/Monk)
+- **Equipment** — Method 1: pick your class's (a)/(b) gear options interactively; Method 2:
+  roll starting wealth (5d4 × 10 gp) and **buy from a priced shop** (armor, 37 weapons,
+  packs, 87 gear items) with a live wallet and filter. Plus **armor selection and AC**
+  (armor table + Unarmored Defense for Barbarian/Monk)
 - **Review** — assembled character sheet (abilities with save bonuses, derived HP/speed,
   class/lineage/heritage/background features and traits, equipment) with **JSON
   export/import** and **print / save-to-PDF**
@@ -124,7 +126,7 @@ python3 convert.py 13 19      # optional page range, for testing
 - [x] Full talent catalog selection (all 45 talents with prerequisites)
 - [x] Armor / Unarmored Defense AC model
 - [x] Interactive skill selection (class + background, with cross-source dedup and bonuses)
-- [ ] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
+- [x] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
 - [ ] Spell selection for casters
 
 ## Attribution & licensing

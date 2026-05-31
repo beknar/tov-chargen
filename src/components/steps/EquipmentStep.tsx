@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { rollStartingGold } from '../../data/abilityScoreMethods'
-import { getClass } from '../../data/classes'
-import { getBackground } from '../../data/backgrounds'
+import { getClass, type ClassDef } from '../../data/classes'
+import { getBackground, type BackgroundDef } from '../../data/backgrounds'
 import { ARMORS, computeAC } from '../../data/armor'
+import { SHOP, getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { useCharacter } from '../../state/CharacterContext'
+import type { Character } from '../../state/types'
 
 export function EquipmentStep() {
   const { character, patch } = useCharacter()
@@ -75,58 +78,154 @@ export function EquipmentStep() {
         </div>
       </fieldset>
 
-      {method === 'granted' && (
-        <div className="score-editor">
-          {!cls && !background && (
-            <p className="muted">Choose a class and background first to see your starting gear.</p>
-          )}
-          {cls && (
-            <>
-              <h3>{cls.name} equipment</h3>
-              <ul className="gear-list">
-                {cls.startingEquipment.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </>
-          )}
-          {background && (
-            <>
-              <h3>{background.name} equipment</h3>
-              <p>{background.equipment}</p>
-            </>
-          )}
-          {(cls?.startingEquipment.some((s) => s.includes('(a)')) ?? false) && (
-            <p className="muted feature-note">
-              Where an item lists (a)/(b) choices, pick one option for your sheet.
-            </p>
-          )}
-        </div>
-      )}
-
-      {method === 'wealth' && (
-        <div className="score-editor">
-          {character.gold === null ? (
-            <button className="primary" onClick={() => patch({ gold: rollStartingGold() })}>
-              🎲 Roll starting gold (5d4 × 10 gp)
-            </button>
-          ) : (
-            <>
-              <p className="gold-result">
-                Starting gold: <strong>{character.gold} gp</strong>
-              </p>
-              <button className="secondary" onClick={() => patch({ gold: rollStartingGold() })}>
-                Re-roll
-              </button>
-              <p className="muted feature-note">
-                Spend it on gear from Chapter 5 of the Player's Guide; note any leftover gp.
-              </p>
-            </>
-          )}
-        </div>
-      )}
-
+      {method === 'granted' && <GrantedGear cls={cls} background={background} />}
+      {method === 'wealth' && <Shop character={character} patch={patch} />}
       {!method && <p className="muted">Choose how to get your starting equipment.</p>}
+    </div>
+  )
+}
+
+// ---- Method 1: interactive (a)/(b) choices ----
+
+function GrantedGear({ cls, background }: { cls?: ClassDef; background?: BackgroundDef }) {
+  const { character, patch } = useCharacter()
+  if (!cls && !background) {
+    return <p className="muted">Choose a class and background first to see your starting gear.</p>
+  }
+
+  function choose(lineIndex: number, optIndex: number) {
+    patch({ equipmentChoices: { ...character.equipmentChoices, [lineIndex]: optIndex } })
+  }
+
+  return (
+    <div className="score-editor">
+      {cls && (
+        <>
+          <h3>{cls.name} equipment</h3>
+          <ul className="grant-list">
+            {cls.startingEquipment.map((line, i) => {
+              const opts = parseEquipmentOptions(line)
+              if (opts.length === 1) return <li key={i} className="grant-fixed">{opts[0]}</li>
+              const chosen = character.equipmentChoices[i] ?? 0
+              return (
+                <li key={i} className="grant-choice" role="radiogroup" aria-label={`Choice ${i + 1}`}>
+                  {opts.map((opt, oi) => (
+                    <button
+                      key={oi}
+                      role="radio"
+                      aria-checked={chosen === oi}
+                      className={`opt-chip ${chosen === oi ? 'on' : ''}`}
+                      onClick={() => choose(i, oi)}
+                    >
+                      <span className="opt-letter">{String.fromCharCode(97 + oi)}</span>
+                      {opt}
+                    </button>
+                  ))}
+                </li>
+              )
+            })}
+          </ul>
+        </>
+      )}
+      {background && (
+        <>
+          <h3>{background.name} equipment</h3>
+          <p>{background.equipment}</p>
+        </>
+      )}
+    </div>
+  )
+}
+
+// ---- Method 2: buyable shop ----
+
+function Shop({ character, patch }: { character: Character; patch: (p: Partial<Character>) => void }) {
+  const [query, setQuery] = useState('')
+
+  if (character.gold === null) {
+    return (
+      <div className="score-editor">
+        <button className="primary" onClick={() => patch({ gold: rollStartingGold() })}>
+          🎲 Roll starting gold (5d4 × 10 gp)
+        </button>
+        <p className="muted">Rolls your starting wealth, then opens the shop.</p>
+      </div>
+    )
+  }
+
+  const spent = character.purchases.reduce(
+    (s, p) => s + (getShopItem(p.id)?.costGp ?? 0) * p.qty,
+    0,
+  )
+  const remaining = character.gold - spent
+  const qtyOf = (id: string) => character.purchases.find((p) => p.id === id)?.qty ?? 0
+
+  function setQty(id: string, qty: number) {
+    const others = character.purchases.filter((p) => p.id !== id)
+    patch({ purchases: qty > 0 ? [...others, { id, qty }] : others })
+  }
+
+  const q = query.trim().toLowerCase()
+
+  return (
+    <div className="score-editor shop">
+      <div className="shop-bar">
+        <div className="wallet">
+          <span>Gold <strong>{gp(character.gold)}</strong></span>
+          <span>Spent <strong>{gp(spent)}</strong></span>
+          <span className={remaining < 0 ? 'over' : ''}>
+            Remaining <strong>{gp(remaining)}</strong>
+          </span>
+          <button className="secondary small" onClick={() => patch({ gold: rollStartingGold(), purchases: [] })}>
+            Re-roll
+          </button>
+        </div>
+        <input
+          type="search"
+          placeholder="Filter items…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </div>
+      {remaining < 0 && <p className="over feature-note">You’ve overspent by {gp(-remaining)}.</p>}
+
+      {SHOP.map((cat) => {
+        const items = cat.items.filter((i) => !q || i.name.toLowerCase().includes(q))
+        if (items.length === 0) return null
+        return (
+          <div key={cat.name} className="shop-cat">
+            <h4>{cat.name}</h4>
+            <ul className="shop-list">
+              {items.map((item) => {
+                const qty = qtyOf(item.id)
+                const affordable = remaining - item.costGp >= 0
+                return (
+                  <li key={item.id} className={qty > 0 ? 'in-cart' : ''}>
+                    <span className="shop-name">
+                      {item.name}
+                      {item.note && <span className="shop-note"> · {item.note}</span>}
+                    </span>
+                    <span className="shop-price">{gp(item.costGp)}</span>
+                    <span className="shop-qty">
+                      <button aria-label={`Remove one ${item.name}`} disabled={qty === 0} onClick={() => setQty(item.id, qty - 1)}>
+                        −
+                      </button>
+                      <span>{qty}</span>
+                      <button
+                        aria-label={`Add one ${item.name}`}
+                        disabled={!affordable}
+                        onClick={() => setQty(item.id, qty + 1)}
+                      >
+                        +
+                      </button>
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -18,25 +18,28 @@ export interface ArmorDef {
   strReq: number | null
   /** Stealth disadvantage ("Noisy" property). */
   stealthDisadvantage: boolean
+  /** Cost in gp. */
+  cost: number
 }
 
 export const ARMORS: ArmorDef[] = [
-  { id: 'padded', name: 'Padded', category: 'light', baseAC: 11, strReq: null, stealthDisadvantage: true },
-  { id: 'leather', name: 'Leather', category: 'light', baseAC: 11, strReq: null, stealthDisadvantage: false },
-  { id: 'studded-leather', name: 'Studded Leather', category: 'light', baseAC: 12, strReq: null, stealthDisadvantage: false },
-  { id: 'brigandine', name: 'Brigandine', category: 'light', baseAC: 13, strReq: null, stealthDisadvantage: true },
-  { id: 'hide', name: 'Hide', category: 'medium', baseAC: 12, strReq: null, stealthDisadvantage: false },
-  { id: 'chain-shirt', name: 'Chain Shirt', category: 'medium', baseAC: 13, strReq: null, stealthDisadvantage: false },
-  { id: 'scale-mail', name: 'Scale Mail', category: 'medium', baseAC: 14, strReq: null, stealthDisadvantage: true },
-  { id: 'breastplate', name: 'Breastplate', category: 'medium', baseAC: 14, strReq: null, stealthDisadvantage: false },
-  { id: 'half-plate', name: 'Half Plate', category: 'medium', baseAC: 15, strReq: null, stealthDisadvantage: true },
-  { id: 'ring-mail', name: 'Ring Mail', category: 'heavy', baseAC: 15, strReq: null, stealthDisadvantage: true },
-  { id: 'chain-mail', name: 'Chain Mail', category: 'heavy', baseAC: 16, strReq: 13, stealthDisadvantage: true },
-  { id: 'splint', name: 'Splint', category: 'heavy', baseAC: 17, strReq: 15, stealthDisadvantage: true },
-  { id: 'plate', name: 'Plate', category: 'heavy', baseAC: 18, strReq: 16, stealthDisadvantage: true },
+  { id: 'padded', name: 'Padded', category: 'light', baseAC: 11, strReq: null, stealthDisadvantage: true, cost: 5 },
+  { id: 'leather', name: 'Leather', category: 'light', baseAC: 11, strReq: null, stealthDisadvantage: false, cost: 10 },
+  { id: 'studded-leather', name: 'Studded Leather', category: 'light', baseAC: 12, strReq: null, stealthDisadvantage: false, cost: 45 },
+  { id: 'brigandine', name: 'Brigandine', category: 'light', baseAC: 13, strReq: null, stealthDisadvantage: true, cost: 50 },
+  { id: 'hide', name: 'Hide', category: 'medium', baseAC: 12, strReq: null, stealthDisadvantage: false, cost: 10 },
+  { id: 'chain-shirt', name: 'Chain Shirt', category: 'medium', baseAC: 13, strReq: null, stealthDisadvantage: false, cost: 50 },
+  { id: 'scale-mail', name: 'Scale Mail', category: 'medium', baseAC: 14, strReq: null, stealthDisadvantage: true, cost: 50 },
+  { id: 'breastplate', name: 'Breastplate', category: 'medium', baseAC: 14, strReq: null, stealthDisadvantage: false, cost: 400 },
+  { id: 'half-plate', name: 'Half Plate', category: 'medium', baseAC: 15, strReq: null, stealthDisadvantage: true, cost: 750 },
+  { id: 'ring-mail', name: 'Ring Mail', category: 'heavy', baseAC: 15, strReq: null, stealthDisadvantage: true, cost: 30 },
+  { id: 'chain-mail', name: 'Chain Mail', category: 'heavy', baseAC: 16, strReq: 13, stealthDisadvantage: true, cost: 75 },
+  { id: 'splint', name: 'Splint', category: 'heavy', baseAC: 17, strReq: 15, stealthDisadvantage: true, cost: 200 },
+  { id: 'plate', name: 'Plate', category: 'heavy', baseAC: 18, strReq: 16, stealthDisadvantage: true, cost: 1500 },
 ]
 
 export const SHIELD_BONUS = 2
+export const SHIELD_COST = 10
 
 export function getArmor(id: string | null): ArmorDef | undefined {
   return id ? ARMORS.find((a) => a.id === id) : undefined

@@ -28,6 +28,10 @@ export interface Character {
   equipmentMethod: 'granted' | 'wealth' | null
   /** Starting gold (Method 2), in gp. */
   gold: number | null
+  /** Method 1: chosen option index per class starting-equipment line. */
+  equipmentChoices: Record<string, number>
+  /** Method 2: purchased shop items. */
+  purchases: { id: string; qty: number }[]
   /** Equipped armor (armor id) for AC calculation. */
   armorId: string | null
   /** Whether a shield is equipped. */
@@ -59,6 +63,8 @@ export const INITIAL_CHARACTER: Character = {
   talentId: null,
   equipmentMethod: null,
   gold: null,
+  equipmentChoices: {},
+  purchases: [],
   armorId: null,
   shield: false,
 }

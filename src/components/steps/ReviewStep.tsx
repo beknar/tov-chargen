@@ -15,6 +15,7 @@ import { getHeritage } from '../../data/heritages'
 import { getBackground } from '../../data/backgrounds'
 import { getTalent } from '../../data/talents'
 import { SKILLS } from '../../data/skills'
+import { getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { INITIAL_CHARACTER, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -46,6 +47,12 @@ export function ReviewStep() {
   const hp = cls ? cls.hitDie + conMod : null
   const ac = computeAC(character.abilityScores, character.classId, character.armorId, character.shield)
   const missing = completeness(character)
+
+  const purchasedItems = character.purchases
+    .map((p) => ({ item: getShopItem(p.id), qty: p.qty }))
+    .filter((p): p is { item: NonNullable<typeof p.item>; qty: number } => Boolean(p.item))
+  const spentGold = purchasedItems.reduce((s, { item, qty }) => s + item.costGp * qty, 0)
+  const remainingGold = (character.gold ?? 0) - spentGold
 
   const proficientSkills = new Set([...character.classSkills, ...character.backgroundSkills])
   const skillRows = SKILLS.map((sk) => {
@@ -298,15 +305,32 @@ export function ReviewStep() {
               <>
                 {cls && (
                   <ul className="sheet-kv">
-                    {cls.startingEquipment.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
+                    {cls.startingEquipment.map((line, i) => {
+                      const opts = parseEquipmentOptions(line)
+                      const chosen = opts.length > 1 ? opts[character.equipmentChoices[i] ?? 0] : opts[0]
+                      return <li key={i}>{chosen}</li>
+                    })}
                   </ul>
                 )}
                 {background && <p>{background.equipment}</p>}
               </>
             ) : (
-              <p>Starting wealth: {character.gold !== null ? `${character.gold} gp` : 'not yet rolled'}</p>
+              <>
+                <p>
+                  Starting wealth: {character.gold !== null ? `${character.gold} gp` : 'not yet rolled'}
+                  {character.gold !== null && ` · ${gp(remainingGold)} left`}
+                </p>
+                {purchasedItems.length > 0 && (
+                  <ul className="sheet-kv">
+                    {purchasedItems.map(({ item, qty }) => (
+                      <li key={item.id}>
+                        {item.name}
+                        {qty > 1 ? ` ×${qty}` : ''} <span className="muted">({gp(item.costGp * qty)})</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
           </section>
         )}
