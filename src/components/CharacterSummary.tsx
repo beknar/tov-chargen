@@ -40,6 +40,10 @@ export function CharacterSummary() {
           <dd>
             {cls ? cls.name : <span className="muted">—</span>}
             {subclass && <span className="subclass-tag"> · {subclass.name}</span>}
+            {character.multiclasses.map((id) => {
+              const mc = getClass(id)
+              return mc ? <span key={id} className="subclass-tag"> / {mc.name}</span> : null
+            })}
           </dd>
         </div>
         <div>

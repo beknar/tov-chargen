@@ -215,6 +215,11 @@ export function ReviewStep() {
             <h3>
               Class — {cls.name}
               {subclass ? ` (${subclass.name})` : ''}
+              {character.multiclasses
+                .map((id) => getClass(id)?.name)
+                .filter(Boolean)
+                .map((n) => ` / ${n}`)
+                .join('')}
             </h3>
             <ul className="sheet-kv">
               <li>

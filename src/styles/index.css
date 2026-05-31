@@ -840,6 +840,47 @@ button:disabled {
   color: var(--bg);
 }
 
+/* ---- Multiclass ---- */
+
+.multiclass {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+.multiclass > summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: 'Trebuchet MS', system-ui, sans-serif;
+  font-size: 1.05rem;
+}
+.mc-list {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.5rem;
+}
+.mc-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--panel);
+}
+.mc-row.ineligible {
+  opacity: 0.55;
+}
+.mc-name {
+  font-weight: 600;
+}
+.mc-prereq {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---- Magic items ---- */
 
 .magic-items {

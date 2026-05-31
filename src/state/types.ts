@@ -10,6 +10,8 @@ export interface Character {
   classId: string | null
   /** Subclass chosen for the class. */
   subclassId: string | null
+  /** Optional rule: additional class ids beyond the primary class. */
+  multiclasses: string[]
   scoreMethod: ScoreMethod | null
   abilityScores: AbilityScores
   /** Persisted 4d6-drop-lowest results when the rolling method is used. */
@@ -58,6 +60,7 @@ export const INITIAL_CHARACTER: Character = {
   concept: '',
   classId: null,
   subclassId: null,
+  multiclasses: [],
   scoreMethod: null,
   abilityScores: { ...DEFAULT_ABILITY_SCORES },
   rolledScores: null,

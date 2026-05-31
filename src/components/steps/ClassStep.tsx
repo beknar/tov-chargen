@@ -1,6 +1,7 @@
 import { ABILITY_ABBR } from '../../data/abilities'
 import { CLASSES, getClass } from '../../data/classes'
 import { getSubclasses } from '../../data/subclasses'
+import { canMulticlass, prereqText } from '../../data/multiclass'
 import { SkillPicker } from '../SkillPicker'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -22,7 +23,14 @@ export function ClassStep() {
               className={`choice-card ${sel ? 'selected' : ''}`}
               onClick={() => {
                 if (cls.id === character.classId) return
-                patch({ classId: cls.id, subclassId: null, classSkills: [], cantrips: [], spells: [] })
+                patch({
+                  classId: cls.id,
+                  subclassId: null,
+                  classSkills: [],
+                  cantrips: [],
+                  spells: [],
+                  multiclasses: character.multiclasses.filter((m) => m !== cls.id),
+                })
               }}
             >
               <span className="choice-title">
@@ -115,6 +123,41 @@ export function ClassStep() {
               </div>
             </>
           )}
+
+          <details className="multiclass">
+            <summary>
+              Multiclass <span className="muted">(optional rule — {character.multiclasses.length} added)</span>
+            </summary>
+            <p className="muted feature-note">
+              With your GM’s approval, gain levels in other classes. You qualify only if you
+              meet the ability-score prerequisites of <em>both</em> {selected.name} and the new
+              class.
+            </p>
+            <div className="mc-list">
+              {CLASSES.filter((c) => c.id !== selected.id).map((c) => {
+                const added = character.multiclasses.includes(c.id)
+                const eligible = canMulticlass(character.abilityScores, selected.id, c.id)
+                return (
+                  <label key={c.id} className={`mc-row ${eligible ? '' : 'ineligible'}`}>
+                    <input
+                      type="checkbox"
+                      checked={added}
+                      disabled={!eligible && !added}
+                      onChange={() =>
+                        patch({
+                          multiclasses: added
+                            ? character.multiclasses.filter((x) => x !== c.id)
+                            : [...character.multiclasses, c.id],
+                        })
+                      }
+                    />
+                    <span className="mc-name">{c.name}</span>
+                    <span className="mc-prereq">{prereqText(c.id)}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </details>
         </div>
       )}
     </div>
