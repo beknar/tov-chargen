@@ -929,9 +929,22 @@ button:disabled {
   border-bottom: 1px dashed var(--rule);
 }
 .grant-choice {
+  display: grid;
+  gap: 0.4rem;
+}
+.opt-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+.weapon-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-left: 1.8rem;
+}
+.weapon-slots select {
+  max-width: 18rem;
 }
 .opt-chip {
   display: inline-flex;

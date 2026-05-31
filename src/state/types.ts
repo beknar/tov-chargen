@@ -36,6 +36,8 @@ export interface Character {
   gold: number | null
   /** Method 1: chosen option index per class starting-equipment line. */
   equipmentChoices: Record<string, number>
+  /** Method 1: specific weapons chosen for generic slots, per line index. */
+  weaponChoices: Record<string, string[]>
   /** Method 2: purchased shop items. */
   purchases: { id: string; qty: number }[]
   /** Optional magic items added to the character (item ids). */
@@ -77,6 +79,7 @@ export const INITIAL_CHARACTER: Character = {
   equipmentMethod: null,
   gold: null,
   equipmentChoices: {},
+  weaponChoices: {},
   purchases: [],
   magicItems: [],
   equippedWeapons: [],
@@ -134,6 +137,13 @@ export function sanitizeCharacter(data: unknown): Character {
       if (typeof v === 'number') ec[k] = v
     }
     out.equipmentChoices = ec
+  }
+  if (d.weaponChoices && typeof d.weaponChoices === 'object') {
+    const wc: Record<string, string[]> = {}
+    for (const [k, v] of Object.entries(d.weaponChoices as Record<string, unknown>)) {
+      if (Array.isArray(v)) wc[k] = v.filter((x): x is string => typeof x === 'string')
+    }
+    out.weaponChoices = wc
   }
   return out
 }

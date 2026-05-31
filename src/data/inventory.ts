@@ -55,6 +55,10 @@ export function deriveInventory(c: Character): Inventory {
     matchNames(text, WEAPONS).forEach((id) => weapons.add(id))
     matchNames(text, ARMORS).forEach((id) => armor.add(id))
     if (/\bshields?\b/i.test(text)) shield = true
+    // specific weapons chosen for generic slots ("a martial weapon")
+    for (const ids of Object.values(c.weaponChoices)) {
+      for (const id of ids) if (getWeapon(id)) weapons.add(id)
+    }
   }
 
   // whatever is equipped for AC is also owned

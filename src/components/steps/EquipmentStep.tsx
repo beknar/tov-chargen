@@ -3,7 +3,8 @@ import { rollStartingGold } from '../../data/abilityScoreMethods'
 import { getClass, type ClassDef } from '../../data/classes'
 import { getBackground, type BackgroundDef } from '../../data/backgrounds'
 import { ARMORS, computeAC, getArmor } from '../../data/armor'
-import { SHOP, getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
+import { SHOP, getShopItem, gp, parseEquipmentOptions, parseWeaponSlots } from '../../data/shop'
+import { WEAPONS } from '../../data/weapons'
 import { MagicItemPicker } from '../MagicItemPicker'
 import { useCharacter } from '../../state/CharacterContext'
 import type { Character } from '../../state/types'
@@ -105,7 +106,16 @@ function GrantedGear({ cls, background }: { cls?: ClassDef; background?: Backgro
   }
 
   function choose(lineIndex: number, optIndex: number) {
-    patch({ equipmentChoices: { ...character.equipmentChoices, [lineIndex]: optIndex } })
+    // switching the option invalidates any weapon picks for that line
+    const wc = { ...character.weaponChoices }
+    delete wc[lineIndex]
+    patch({ equipmentChoices: { ...character.equipmentChoices, [lineIndex]: optIndex }, weaponChoices: wc })
+  }
+
+  function setWeapon(lineIndex: number, slot: number, weaponId: string) {
+    const arr = [...(character.weaponChoices[lineIndex] ?? [])]
+    arr[slot] = weaponId
+    patch({ weaponChoices: { ...character.weaponChoices, [lineIndex]: arr } })
   }
 
   return (
@@ -116,22 +126,54 @@ function GrantedGear({ cls, background }: { cls?: ClassDef; background?: Backgro
           <ul className="grant-list">
             {cls.startingEquipment.map((line, i) => {
               const opts = parseEquipmentOptions(line)
-              if (opts.length === 1) return <li key={i} className="grant-fixed">{opts[0]}</li>
-              const chosen = character.equipmentChoices[i] ?? 0
+              const chosen = opts.length > 1 ? character.equipmentChoices[i] ?? 0 : 0
+              const slots = parseWeaponSlots(opts[chosen])
               return (
-                <li key={i} className="grant-choice" role="radiogroup" aria-label={`Choice ${i + 1}`}>
-                  {opts.map((opt, oi) => (
-                    <button
-                      key={oi}
-                      role="radio"
-                      aria-checked={chosen === oi}
-                      className={`opt-chip ${chosen === oi ? 'on' : ''}`}
-                      onClick={() => choose(i, oi)}
-                    >
-                      <span className="opt-letter">{String.fromCharCode(97 + oi)}</span>
-                      {opt}
-                    </button>
-                  ))}
+                <li key={i} className={opts.length === 1 ? 'grant-fixed' : 'grant-choice'}>
+                  {opts.length === 1 ? (
+                    opts[0]
+                  ) : (
+                    <div className="opt-row" role="radiogroup" aria-label={`Choice ${i + 1}`}>
+                      {opts.map((opt, oi) => (
+                        <button
+                          key={oi}
+                          role="radio"
+                          aria-checked={chosen === oi}
+                          className={`opt-chip ${chosen === oi ? 'on' : ''}`}
+                          onClick={() => choose(i, oi)}
+                        >
+                          <span className="opt-letter">{String.fromCharCode(97 + oi)}</span>
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {slots.length > 0 && (
+                    <div className="weapon-slots">
+                      {slots.map((slot, si) => {
+                        const choices = WEAPONS.filter(
+                          (w) => w.category === slot.category && (slot.kind === 'any' || w.kind === slot.kind),
+                        )
+                        return (
+                          <select
+                            key={si}
+                            value={character.weaponChoices[i]?.[si] ?? ''}
+                            onChange={(e) => setWeapon(i, si, e.target.value)}
+                          >
+                            <option value="">
+                              Choose a {slot.category}
+                              {slot.kind !== 'any' ? ` ${slot.kind}` : ''} weapon…
+                            </option>
+                            {choices.map((w) => (
+                              <option key={w.id} value={w.id}>
+                                {w.name} ({w.damage})
+                              </option>
+                            ))}
+                          </select>
+                        )
+                      })}
+                    </div>
+                  )}
                 </li>
               )
             })}

@@ -54,3 +54,27 @@ export function parseEquipmentOptions(item: string): string[] {
     .map((s) => s.replace(/\bor\s*$/i, '').trim())
     .filter(Boolean)
 }
+
+export interface WeaponSlot {
+  category: 'simple' | 'martial'
+  kind: 'any' | 'melee' | 'ranged'
+}
+
+const COUNT_WORDS: Record<string, number> = { a: 1, an: 1, any: 1, one: 1, two: 2, three: 3 }
+
+/**
+ * Find generic weapon slots in a granted-equipment option, e.g.
+ * "a martial weapon and a shield" -> one martial/any slot;
+ * "two simple melee weapons" -> two simple/melee slots.
+ */
+export function parseWeaponSlots(optionText: string): WeaponSlot[] {
+  const re = /\b(a|an|any|one|two|three)\s+(simple|martial)\s+(?:(melee|ranged)\s+)?weapons?\b/gi
+  const slots: WeaponSlot[] = []
+  for (const m of optionText.matchAll(re)) {
+    const count = COUNT_WORDS[m[1].toLowerCase()] ?? 1
+    const category = m[2].toLowerCase() as WeaponSlot['category']
+    const kind = (m[3]?.toLowerCase() ?? 'any') as WeaponSlot['kind']
+    for (let i = 0; i < count; i++) slots.push({ category, kind })
+  }
+  return slots
+}
