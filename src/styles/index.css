@@ -729,40 +729,61 @@ button:disabled {
   font-weight: 400;
   color: var(--muted);
 }
+.spell-count.over {
+  color: var(--bad);
+}
 .spell-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 0.4rem;
 }
-.spell-chip {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  text-align: left;
+.spell-item {
   background: var(--panel);
   border: 1px solid var(--rule);
   border-radius: 6px;
-  padding: 0.4rem 0.6rem;
-  color: var(--fg);
 }
-.spell-chip:hover {
-  border-color: var(--accent);
-}
-.spell-chip.on {
+.spell-item.on {
   border-color: var(--accent);
   box-shadow: inset 0 0 0 1px var(--accent);
-  background: var(--accent-soft);
+}
+.spell-item summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+.spell-item summary::-webkit-details-marker {
+  display: none;
+}
+.spell-select {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 5px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-weight: 700;
+}
+.spell-select.on {
+  background: var(--accent);
+  color: var(--bg);
 }
 .spell-name {
   font-weight: 600;
+  flex: 1;
 }
 .spell-school {
   font-size: 0.75rem;
   color: var(--muted);
+}
+.spell-text {
+  margin: 0;
+  padding: 0 0.7rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--fg);
 }
 
 /* ---- Method 1: equipment choices ---- */
