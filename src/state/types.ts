@@ -18,6 +18,10 @@ export interface Character {
   lineageId: string | null
   heritageId: string | null
   backgroundId: string | null
+  /** Skill proficiencies chosen from the class grant (skill ids). */
+  classSkills: string[]
+  /** Skill proficiencies from the background grant, incl. fixed (skill ids). */
+  backgroundSkills: string[]
   /** Talent chosen from the background's options (talent name). */
   talentId: string | null
   /** Starting-equipment method: take granted gear, or roll for wealth. */
@@ -50,6 +54,8 @@ export const INITIAL_CHARACTER: Character = {
   lineageId: null,
   heritageId: null,
   backgroundId: null,
+  classSkills: [],
+  backgroundSkills: [],
   talentId: null,
   equipmentMethod: null,
   gold: null,

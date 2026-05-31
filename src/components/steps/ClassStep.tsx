@@ -1,6 +1,7 @@
 import { ABILITY_ABBR } from '../../data/abilities'
 import { CLASSES, getClass } from '../../data/classes'
 import { getSubclasses } from '../../data/subclasses'
+import { SkillPicker } from '../SkillPicker'
 import { useCharacter } from '../../state/CharacterContext'
 
 export function ClassStep() {
@@ -19,9 +20,10 @@ export function ClassStep() {
               role="radio"
               aria-checked={sel}
               className={`choice-card ${sel ? 'selected' : ''}`}
-              onClick={() =>
-                patch({ classId: cls.id, subclassId: cls.id === character.classId ? character.subclassId : null })
-              }
+              onClick={() => {
+                if (cls.id === character.classId) return
+                patch({ classId: cls.id, subclassId: null, classSkills: [] })
+              }}
             >
               <span className="choice-title">
                 {cls.name}
@@ -64,11 +66,15 @@ export function ClassStep() {
               <dt>Saves</dt>
               <dd>{selected.savingThrows.map((a) => ABILITY_ABBR[a]).join(', ')}</dd>
             </div>
-            <div>
-              <dt>Skills</dt>
-              <dd>{selected.proficiencies.skills || '—'}</dd>
-            </div>
           </dl>
+
+          <h3>Skill proficiencies</h3>
+          <SkillPicker
+            text={selected.proficiencies.skills}
+            selected={character.classSkills}
+            taken={character.backgroundSkills}
+            onChange={(s) => patch({ classSkills: s })}
+          />
 
           {selected.features.length > 0 && (
             <>

@@ -1,5 +1,7 @@
 import { BACKGROUNDS, getBackground } from '../../data/backgrounds'
 import { TALENT_CATEGORIES, getTalent, talentsByCategory } from '../../data/talents'
+import { parseSkillGrant } from '../../data/skills'
+import { SkillPicker } from '../SkillPicker'
 import { useCharacter } from '../../state/CharacterContext'
 
 export function BackgroundStep() {
@@ -7,13 +9,15 @@ export function BackgroundStep() {
   const selected = getBackground(character.backgroundId)
 
   function chooseBackground(id: string) {
-    // changing background clears a talent that no longer applies
+    if (id === character.backgroundId) return
     const bg = getBackground(id)
     const keepTalent =
       character.talentId && bg?.talentChoices.includes(character.talentId)
         ? character.talentId
         : null
-    patch({ backgroundId: id, talentId: keepTalent })
+    // reset skills to the new background's auto-granted (fixed) skills
+    const fixed = bg ? parseSkillGrant(bg.skills).fixed : []
+    patch({ backgroundId: id, talentId: keepTalent, backgroundSkills: fixed })
   }
 
   return (
@@ -40,10 +44,6 @@ export function BackgroundStep() {
         <div className="detail">
           <h3>{selected.name}</h3>
           <dl className="prof-list">
-            <div>
-              <dt>Skills</dt>
-              <dd>{selected.skills || '—'}</dd>
-            </div>
             {selected.additional && (
               <div>
                 <dt>Also</dt>
@@ -61,6 +61,14 @@ export function BackgroundStep() {
               <dd>{selected.equipment || '—'}</dd>
             </div>
           </dl>
+
+          <h3>Skill proficiencies</h3>
+          <SkillPicker
+            text={selected.skills}
+            selected={character.backgroundSkills}
+            taken={character.classSkills}
+            onChange={(s) => patch({ backgroundSkills: s })}
+          />
 
           <h3>Choose a talent</h3>
           <p className="muted feature-note">

@@ -14,6 +14,7 @@ import { getLineage } from '../../data/lineages'
 import { getHeritage } from '../../data/heritages'
 import { getBackground } from '../../data/backgrounds'
 import { getTalent } from '../../data/talents'
+import { SKILLS } from '../../data/skills'
 import { INITIAL_CHARACTER, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -45,6 +46,13 @@ export function ReviewStep() {
   const hp = cls ? cls.hitDie + conMod : null
   const ac = computeAC(character.abilityScores, character.classId, character.armorId, character.shield)
   const missing = completeness(character)
+
+  const proficientSkills = new Set([...character.classSkills, ...character.backgroundSkills])
+  const skillRows = SKILLS.map((sk) => {
+    const prof = proficientSkills.has(sk.id)
+    const bonus = abilityModifier(character.abilityScores[sk.ability]) + (prof ? PROFICIENCY_BONUS : 0)
+    return { sk, prof, bonus }
+  })
 
   function isProficientSave(a: Ability) {
     return cls?.savingThrows.includes(a) ?? false
@@ -178,6 +186,22 @@ export function ReviewStep() {
           )}
         </section>
 
+        <section className="sheet-block">
+          <h3>Skills</h3>
+          <ul className="skill-sheet">
+            {skillRows.map(({ sk, prof, bonus }) => (
+              <li key={sk.id} className={prof ? 'prof' : ''}>
+                <span className="skill-sheet-bonus">{formatModifier(bonus)}</span>
+                <span className="skill-sheet-name">
+                  {prof && <span className="prof-dot" title="Proficient" />}
+                  {sk.name}
+                </span>
+                <span className="skill-sheet-ability">{ABILITY_ABBR[sk.ability]}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         {cls && (
           <section className="sheet-block">
             <h3>
@@ -196,9 +220,6 @@ export function ReviewStep() {
               </li>
               <li>
                 <strong>Saves:</strong> {cls.savingThrows.map((a) => ABILITY_ABBR[a]).join(', ')}
-              </li>
-              <li>
-                <strong>Skills:</strong> {cls.proficiencies.skills || '—'}
               </li>
             </ul>
             {cls.features.length > 0 && (
@@ -255,9 +276,6 @@ export function ReviewStep() {
           <section className="sheet-block">
             <h3>Background — {background.name}</h3>
             <ul className="sheet-kv">
-              <li>
-                <strong>Skills:</strong> {background.skills || '—'}
-              </li>
               {background.additional && (
                 <li>
                   <strong>Also:</strong> {background.additional}

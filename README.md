@@ -79,8 +79,11 @@ directly in a browser, independent of the app.
   4d6-drop-lowest rolling
 - **Lineage** — all 8 lineages with size, speed, and traits
 - **Heritage** — all 14 heritages with traits and starting languages
-- **Background** — all 10 backgrounds with skills, proficiencies, equipment, and a talent
-  picker (background suggestions plus the **full 45-talent catalog** with prerequisites)
+- **Background** — all 10 backgrounds with proficiencies, equipment, and a talent picker
+  (background suggestions plus the **full 45-talent catalog** with prerequisites)
+- **Interactive skill selection** — class and background "choose N from…" grants resolved
+  into real picks, with cross-source duplicate prevention and computed skill bonuses on the
+  sheet
 - **Equipment** — take granted class + background gear or roll starting wealth (5d4 × 10 gp),
   plus **armor selection and AC** (armor table + Unarmored Defense for Barbarian/Monk)
 - **Review** — assembled character sheet (abilities with save bonuses, derived HP/speed,
@@ -120,7 +123,7 @@ python3 convert.py 13 19      # optional page range, for testing
 - [x] Subclass selection (all 27 subclasses)
 - [x] Full talent catalog selection (all 45 talents with prerequisites)
 - [x] Armor / Unarmored Defense AC model
-- [ ] Interactive skill selection (resolve "choose two from…" into picks)
+- [x] Interactive skill selection (class + background, with cross-source dedup and bonuses)
 - [ ] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
 - [ ] Spell selection for casters
 
