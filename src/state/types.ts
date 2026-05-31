@@ -40,6 +40,8 @@ export interface Character {
   purchases: { id: string; qty: number }[]
   /** Optional magic items added to the character (item ids). */
   magicItems: string[]
+  /** Equipped weapons (weapon ids) shown in the combat section. */
+  equippedWeapons: string[]
   /** Equipped armor (armor id) for AC calculation. */
   armorId: string | null
   /** Whether a shield is equipped. */
@@ -77,6 +79,7 @@ export const INITIAL_CHARACTER: Character = {
   equipmentChoices: {},
   purchases: [],
   magicItems: [],
+  equippedWeapons: [],
   armorId: null,
   shield: false,
 }
@@ -104,6 +107,7 @@ export function sanitizeCharacter(data: unknown): Character {
   }
   for (const k of [
     'multiclasses', 'classSkills', 'backgroundSkills', 'cantrips', 'spells', 'magicItems',
+    'equippedWeapons',
   ] as const) {
     if (Array.isArray(d[k])) out[k] = (d[k] as unknown[]).filter((x): x is string => typeof x === 'string')
   }

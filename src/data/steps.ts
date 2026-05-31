@@ -18,4 +18,5 @@ export const STEPS: StepDef[] = [
   { id: 'spells', title: 'Spells', blurb: 'Choose spells, if your class casts them.' },
   { id: 'equipment', title: 'Equipment', blurb: 'Take starting gear or buy your own.' },
   { id: 'review', title: 'Review', blurb: 'Check everything and finish your sheet.' },
+  { id: 'combat', title: 'Combat', blurb: 'Equip weapons and see your attacks and abilities.' },
 ]

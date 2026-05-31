@@ -17,6 +17,8 @@ import { getTalent } from '../../data/talents'
 import { SKILLS } from '../../data/skills'
 import { getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { getMagicItem } from '../../data/magicItems'
+import { getWeapon } from '../../data/weapons'
+import { unarmedStrike, weaponAttack } from '../../data/combat'
 import { sanitizeCharacter, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -54,6 +56,14 @@ export function ReviewStep() {
     .filter((p): p is { item: NonNullable<typeof p.item>; qty: number } => Boolean(p.item))
   const spentGold = purchasedItems.reduce((s, { item, qty }) => s + item.costGp * qty, 0)
   const remainingGold = (character.gold ?? 0) - spentGold
+
+  const attacks = [
+    unarmedStrike(character),
+    ...character.equippedWeapons
+      .map(getWeapon)
+      .filter((w): w is NonNullable<typeof w> => !!w)
+      .map((w) => weaponAttack(character, w)),
+  ]
 
   const proficientSkills = new Set([...character.classSkills, ...character.backgroundSkills])
   const skillRows = SKILLS.map((sk) => {
@@ -189,6 +199,30 @@ export function ReviewStep() {
               <span className="stat-value">{character.gold} gp</span>
             </div>
           )}
+        </section>
+
+        <section className="sheet-block">
+          <h3>Attacks</h3>
+          <table className="sheet-attacks">
+            <thead>
+              <tr>
+                <th scope="col">Attack</th>
+                <th scope="col">Bonus</th>
+                <th scope="col">Damage</th>
+                <th scope="col">Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attacks.map((a) => (
+                <tr key={a.name}>
+                  <th scope="row">{a.name}</th>
+                  <td>{formatModifier(a.attackBonus)}{a.proficient ? '' : '*'}</td>
+                  <td>{a.damage}</td>
+                  <td>{a.range}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
 
         <section className="sheet-block">

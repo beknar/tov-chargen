@@ -716,6 +716,93 @@ button:disabled {
   font-weight: 400;
 }
 
+/* ---- Combat step ---- */
+
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+.stat-box {
+  flex: 1 1 6rem;
+  text-align: center;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: var(--panel);
+}
+.attacks-table,
+.sheet-attacks {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.5rem;
+}
+.attacks-table th,
+.attacks-table td,
+.sheet-attacks th,
+.sheet-attacks td {
+  border: 1px solid var(--rule);
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+}
+.attacks-table thead th,
+.sheet-attacks thead th {
+  background: var(--accent-soft);
+  font-size: 0.85rem;
+}
+.atk-ability {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.not-prof {
+  color: var(--bad);
+  font-weight: 700;
+}
+.atk-props {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.weapon-filter {
+  width: 100%;
+  max-width: 22rem;
+  margin: 0.5rem 0;
+  display: block;
+}
+.weapon-pick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.weapon-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  color: var(--fg);
+}
+.weapon-chip:hover {
+  border-color: var(--accent);
+}
+.weapon-chip.on {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: var(--accent-soft);
+}
+.wc-name {
+  font-weight: 600;
+}
+.wc-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
 /* ---- Spell selection ---- */
 
 .spell-group {

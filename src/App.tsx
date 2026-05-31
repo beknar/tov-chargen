@@ -12,6 +12,7 @@ import { BackgroundStep } from './components/steps/BackgroundStep'
 import { SpellStep } from './components/steps/SpellStep'
 import { EquipmentStep } from './components/steps/EquipmentStep'
 import { ReviewStep } from './components/steps/ReviewStep'
+import { CombatStep } from './components/steps/CombatStep'
 
 function renderStep(stepId: string) {
   switch (stepId) {
@@ -33,6 +34,8 @@ function renderStep(stepId: string) {
       return <EquipmentStep />
     case 'review':
       return <ReviewStep />
+    case 'combat':
+      return <CombatStep />
     default:
       return <ReviewStep />
   }
