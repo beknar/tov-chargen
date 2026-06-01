@@ -8,7 +8,6 @@ import { getClass } from '../data/classes'
 import { getLineage } from '../data/lineages'
 import { getHeritage } from '../data/heritages'
 import { getBackground } from '../data/backgrounds'
-import { getSubclass } from '../data/subclasses'
 import { computeAC } from '../data/armor'
 import { useCharacter } from '../state/CharacterContext'
 
@@ -18,7 +17,6 @@ const PROFICIENCY_BONUS = 2
 export function CharacterSummary() {
   const { character } = useCharacter()
   const cls = getClass(character.classId)
-  const subclass = getSubclass(character.classId, character.subclassId)
   const lineage = getLineage(character.lineageId)
   const heritage = getHeritage(character.heritageId)
   const background = getBackground(character.backgroundId)
@@ -39,7 +37,6 @@ export function CharacterSummary() {
           <dt>Class</dt>
           <dd>
             {cls ? cls.name : <span className="muted">—</span>}
-            {subclass && <span className="subclass-tag"> · {subclass.name}</span>}
             {character.multiclasses.map((id) => {
               const mc = getClass(id)
               return mc ? <span key={id} className="subclass-tag"> / {mc.name}</span> : null

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { abilityModifier, ABILITY_ABBR, formatModifier } from '../../data/abilities'
 import { getClass } from '../../data/classes'
-import { getSubclass } from '../../data/subclasses'
 import { getLineage } from '../../data/lineages'
 import { getHeritage } from '../../data/heritages'
 import { computeAC, getArmor } from '../../data/armor'
@@ -218,7 +217,6 @@ function Stat({ label, value, sub }: { label: string; value: string | number; su
 
 function SpecialAbilities({ character }: { character: Character }) {
   const cls = getClass(character.classId)
-  const subclass = getSubclass(character.classId, character.subclassId)
   const lineage = getLineage(character.lineageId)
   const heritage = getHeritage(character.heritageId)
   const talentText = getTalent(character.talentId)
@@ -237,12 +235,6 @@ function SpecialAbilities({ character }: { character: Character }) {
           <div className="trait">
             <dt>Talent: {character.talentId}</dt>
             <dd>{talentText ?? 'See the Player’s Guide.'}</dd>
-          </div>
-        )}
-        {subclass && (
-          <div className="trait">
-            <dt>Subclass: {subclass.name}</dt>
-            <dd>{subclass.flavor}</dd>
           </div>
         )}
       </dl>

@@ -8,7 +8,6 @@ import {
   type Ability,
 } from '../../data/abilities'
 import { getClass } from '../../data/classes'
-import { getSubclass } from '../../data/subclasses'
 import { computeAC } from '../../data/armor'
 import { getLineage } from '../../data/lineages'
 import { getHeritage } from '../../data/heritages'
@@ -42,7 +41,6 @@ export function ReviewStep() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const cls = getClass(character.classId)
-  const subclass = getSubclass(character.classId, character.subclassId)
   const lineage = getLineage(character.lineageId)
   const heritage = getHeritage(character.heritageId)
   const background = getBackground(character.backgroundId)
@@ -245,7 +243,6 @@ export function ReviewStep() {
           <section className="sheet-block">
             <h3>
               Class — {cls.name}
-              {subclass ? ` (${subclass.name})` : ''}
               {character.multiclasses
                 .map((id) => getClass(id)?.name)
                 .filter(Boolean)
