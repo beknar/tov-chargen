@@ -1,4 +1,4 @@
-import { abilityModifier, formatModifier, type Ability } from './abilities'
+import { abilityModifier, formatModifier, ABILITY_ABBR, type Ability } from './abilities'
 import { getClass } from './classes'
 import { hasProp, parseDamage, type Weapon } from './weapons'
 import type { AbilityScores, Character } from '../state/types'
@@ -31,6 +31,10 @@ export interface Attack {
   damage: string
   range: string
   properties: string[]
+  /** How the attack bonus was derived, e.g. "STR +3 + PB +2 = +5". */
+  bonusCalc: string
+  /** How the damage was derived, e.g. "1d8 + STR +3". */
+  damageCalc: string
 }
 
 /** Which ability a weapon attack uses (STR melee, DEX ranged, best for finesse). */
@@ -52,18 +56,22 @@ export function weaponAttack(character: Character, weapon: Weapon): Attack {
   const ability = attackAbility(weapon, character.abilityScores)
   const mod = abilityModifier(character.abilityScores[ability])
   const prof = weaponProficient(character, weapon)
+  const abbr = ABILITY_ABBR[ability]
   const dmg = parseDamage(weapon.damage)
   const dmgMod = mod !== 0 ? formatModifier(mod) : ''
   let damage = `${dmg.base}${dmgMod} ${dmg.type}`.trim()
   if (dmg.versatile) damage += ` (${dmg.versatile}${dmgMod} two-handed)`
+  const attackBonus = mod + (prof ? PB : 0)
   return {
     name: weapon.name,
     ability,
-    attackBonus: mod + (prof ? PB : 0),
+    attackBonus,
     proficient: prof,
     damage,
     range: rangeText(weapon),
     properties: weapon.properties,
+    bonusCalc: `${abbr} ${formatModifier(mod)}${prof ? ' + PB +2' : ' (not proficient, no PB)'} = ${formatModifier(attackBonus)}`,
+    damageCalc: `${dmg.base}${mod !== 0 ? ` + ${abbr} ${formatModifier(mod)}` : ''} ${dmg.type}`.trim(),
   }
 }
 
@@ -76,6 +84,7 @@ export function unarmedStrike(character: Character): Attack {
   const dex = abilityModifier(character.abilityScores.dex)
   const useDex = monk && dex > str
   const mod = useDex ? dex : str
+  const abbr = useDex ? 'DEX' : 'STR'
   const dmgMod = mod !== 0 ? formatModifier(mod) : ''
   return {
     name: 'Unarmed Strike',
@@ -85,5 +94,9 @@ export function unarmedStrike(character: Character): Attack {
     damage: monk ? `1d6${dmgMod} bludgeoning (Martial Arts)` : `${1 + str} bludgeoning`,
     range: '5 ft',
     properties: [],
+    bonusCalc: `${abbr} ${formatModifier(mod)} + PB +2 = ${formatModifier(mod + PB)}`,
+    damageCalc: monk
+      ? `1d6${mod !== 0 ? ` + ${abbr} ${formatModifier(mod)}` : ''} bludgeoning`
+      : `1 + STR ${formatModifier(str)} = ${1 + str} bludgeoning`,
   }
 }

@@ -44,14 +44,27 @@ export function CombatStep() {
   const available = WEAPONS.filter((w) => showAll || shown.includes(w.id))
   const list = available.filter((w) => !q || w.name.toLowerCase().includes(q))
 
+  const [showCalc, setShowCalc] = useState(false)
+  const hpCalc = cls ? `d${cls.hitDie} (max ${cls.hitDie}) + CON ${formatModifier(conMod)} = ${hp}` : 'choose a class'
+  const speedCalc = lineage ? `${lineage.name} base speed` : 'choose a lineage'
+
   return (
     <div className="combat-step">
+      <label className="show-calc">
+        <input type="checkbox" checked={showCalc} onChange={(e) => setShowCalc(e.target.checked)} />
+        Show calculations
+      </label>
+
       <section className="stat-strip">
-        <Stat label="Armor Class" value={ac.ac} sub={ac.source} />
-        <Stat label="Hit Points" value={hp ?? '—'} />
-        <Stat label="Initiative" value={formatModifier(dexMod)} />
-        <Stat label="Proficiency" value={formatModifier(PB)} />
-        <Stat label="Speed" value={lineage ? `${lineage.speed} ft` : '—'} />
+        <Stat label="Armor Class" value={ac.ac} calc={showCalc ? ac.breakdown : undefined} />
+        <Stat label="Hit Points" value={hp ?? '—'} calc={showCalc ? hpCalc : undefined} />
+        <Stat label="Initiative" value={formatModifier(dexMod)} calc={showCalc ? `DEX ${formatModifier(dexMod)}` : undefined} />
+        <Stat label="Proficiency" value={formatModifier(PB)} calc={showCalc ? '+2 at 1st level' : undefined} />
+        <Stat
+          label="Speed"
+          value={lineage ? `${lineage.speed} ft` : '—'}
+          calc={showCalc ? speedCalc : undefined}
+        />
       </section>
 
       <h3>Attacks</h3>
@@ -74,8 +87,12 @@ export function CombatStep() {
               <td>
                 {formatModifier(a.attackBonus)}
                 {!a.proficient && <span className="not-prof" title="Not proficient"> *</span>}
+                {showCalc && <span className="calc">{a.bonusCalc}</span>}
               </td>
-              <td>{a.damage}</td>
+              <td>
+                {a.damage}
+                {showCalc && <span className="calc">{a.damageCalc}</span>}
+              </td>
               <td>{a.range}</td>
               <td className="atk-props">{a.properties.join(', ')}</td>
             </tr>
@@ -205,12 +222,20 @@ function GearPanel({
   )
 }
 
-function Stat({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
+function Stat({
+  label,
+  value,
+  calc,
+}: {
+  label: string
+  value: string | number
+  calc?: string
+}) {
   return (
     <div className="stat-box">
       <span className="stat-label">{label}</span>
       <span className="stat-value">{value}</span>
-      {sub && <span className="ac-source">{sub}</span>}
+      {calc && <span className="stat-calc">{calc}</span>}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { abilityModifier, type Ability } from './abilities'
+import { abilityModifier, ABILITY_ABBR, type Ability } from './abilities'
 import type { AbilityScores } from '../state/types'
 
 // Armor (Player's Guide, Chapter 5). AC equations:
@@ -54,7 +54,11 @@ const UNARMORED_DEFENSE: Record<string, { base: number; add: Ability[]; shieldOk
 export interface AcResult {
   ac: number
   source: string
+  /** Human-readable formula, e.g. "Chain Mail 16 + shield 2 = 18". */
+  breakdown: string
 }
+
+const sign = (n: number) => (n >= 0 ? `+${n}` : `${n}`)
 
 /** Compute AC from armor (or unarmored defense / default) + shield. */
 export function computeAC(
@@ -65,23 +69,40 @@ export function computeAC(
 ): AcResult {
   const dex = abilityModifier(scores.dex)
   const shieldBonus = shield ? SHIELD_BONUS : 0
+  const shieldPart = shield ? ' + shield 2' : ''
   const armor = getArmor(armorId)
 
   if (armor) {
     let ac = armor.baseAC
-    if (armor.category === 'light') ac += dex
-    else if (armor.category === 'medium') ac += Math.min(dex, 2)
-    return { ac: ac + shieldBonus, source: `${armor.name}${shield ? ' + shield' : ''}` }
+    let dexPart = ''
+    if (armor.category === 'light') {
+      ac += dex
+      dexPart = ` + DEX ${sign(dex)}`
+    } else if (armor.category === 'medium') {
+      ac += Math.min(dex, 2)
+      dexPart = ` + DEX ${sign(Math.min(dex, 2))} (max 2)`
+    }
+    return {
+      ac: ac + shieldBonus,
+      source: `${armor.name}${shield ? ' + shield' : ''}`,
+      breakdown: `${armor.name} ${armor.baseAC}${dexPart}${shieldPart} = ${ac + shieldBonus}`,
+    }
   }
 
   // Unarmored
   const ud = classId ? UNARMORED_DEFENSE[classId] : undefined
   if (ud && (ud.shieldOk || !shield)) {
+    const addParts = ud.add.map((a) => ` + ${ABILITY_ABBR[a]} ${sign(abilityModifier(scores[a]))}`)
     const ac = ud.base + ud.add.reduce((sum, a) => sum + abilityModifier(scores[a]), 0)
     return {
       ac: ac + shieldBonus,
       source: `Unarmored Defense${shield ? ' + shield' : ''}`,
+      breakdown: `Unarmored Defense ${ud.base}${addParts.join('')}${shieldPart} = ${ac + shieldBonus}`,
     }
   }
-  return { ac: 10 + dex + shieldBonus, source: `Unarmored${shield ? ' + shield' : ''}` }
+  return {
+    ac: 10 + dex + shieldBonus,
+    source: `Unarmored${shield ? ' + shield' : ''}`,
+    breakdown: `10 + DEX ${sign(dex)}${shieldPart} = ${10 + dex + shieldBonus}`,
+  }
 }
