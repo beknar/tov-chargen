@@ -1,39 +1,42 @@
 # ToV Character Creator
 
 A web-based character creation tool for the **Tales of the Valiant (ToV)** roleplaying
-game. It walks a player through building a 1st-level character step by step — picking a
-class, generating ability scores, choosing lineage, heritage, and background, buying
-equipment, and producing a finished character sheet — entirely in the browser.
+game. It walks a player through building a complete 1st-level character — class, ability
+scores, lineage, heritage, background, talents, skills, spells, and equipment — computes
+the derived stats and combat numbers, and produces an exportable/printable character
+sheet, entirely in the browser.
 
-> **Status:** early development. The game rules have been imported (see
-> [`ToV-Players-Guide.html`](#the-rules-reference)); the application UI is being built on
-> top of them.
+> **Status:** feature-complete for 1st-level character creation. All creation steps,
+> derived stats, a combat sheet, and save/load are implemented end to end.
 
 ## What it does
 
-The tool follows the official 8-step character creation sequence from the Player's Guide:
+The app is a step wizard. Steps 1–8 follow the official character-creation sequence from
+the Player's Guide; **Spells** and **Combat** are added as their own steps.
 
-| Step | What the player does |
-|------|----------------------|
-| 0 | Gather materials |
-| 1 | Create a character concept |
-| 2 | Choose a class (Bard, Cleric, Druid, Fighter, Mechanist, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock) |
-| 3 | Determine ability scores — by **rolling** (4d6 drop lowest), **point-buy** (32 points), or the **standard array** (16, 14, 14, 13, 10, 8) |
-| 4 | Choose a lineage |
-| 5 | Choose a heritage |
-| 6 | Choose a background |
-| 7 | Take starting equipment (class + background) or roll starting wealth and buy gear |
-| 8 | Fill in the blanks — derive HP, proficiency bonus, modifiers, and finish the sheet |
+| # | Step | What the player does |
+|---|------|----------------------|
+| 1 | **Concept** | Name the character and sketch the idea |
+| 2 | **Class** | Choose 1 of 13 classes (Barbarian, Bard, Cleric, Druid, Fighter, Mechanist, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard); optionally multiclass |
+| 3 | **Ability Scores** | **Rolling** (4d6 drop lowest), **point-buy** (32 points), or the **standard array** (16, 14, 14, 13, 10, 8) |
+| 4 | **Lineage** | Choose 1 of 8 lineages (ancestry traits) |
+| 5 | **Heritage** | Choose 1 of 14 heritages (culture + languages) |
+| 6 | **Background** | Choose 1 of 10 backgrounds; pick skills and a talent |
+| 7 | **Spells** | Casters pick cantrips and 1st-circle spells; non-casters skip |
+| 8 | **Equipment** | Take class + background gear, or roll wealth (5d4 × 10 gp) and buy; choose armor; add magic items |
+| 9 | **Review** | The assembled sheet, with JSON export/import and print |
+| 10 | **Combat** | Equip weapons/armor, see attacks, AC, HP, speed, and abilities |
 
-Spellcasting classes additionally select spells (a dedicated **Spells** step).
+> Subclasses are **not** chosen during creation — in ToV every class picks its subclass at
+> 3rd level, so the creator intentionally omits it.
 
 ## Tech stack
 
-**[Vite](https://vitejs.dev) + [React](https://react.dev) + TypeScript.** The app is
-fully **client-side** (no backend) and builds to a static bundle deployable to any static
-host (GitHub Pages, Netlify, Vercel, S3, etc.). Character state lives in a React context
-store and is persisted to `localStorage`. Game rules are encoded as typed data modules in
-`src/data/` so the UI renders from data rather than hard-coded rules.
+**[Vite](https://vitejs.dev) + [React](https://react.dev) 18 + TypeScript** (strict). The
+app is fully **client-side** (no backend) and builds to a static bundle deployable to any
+static host (GitHub Pages, Netlify, Vercel, S3, etc.). Character state lives in a React
+context store and is persisted to `localStorage`. Game rules are encoded as typed data
+modules in `src/data/` so the UI renders from data rather than hard-coded rules.
 
 ## Getting started
 
@@ -45,6 +48,10 @@ npm run preview    # serve the production build locally
 npm run typecheck  # type-check without emitting
 ```
 
+> **WSL note:** if the project lives on a Windows drive (`/mnt/c/...`), Linux file
+> watching (inotify) won't detect edits, so HMR won't fire. Start the dev server with
+> polling: `CHOKIDAR_USEPOLLING=true npm run dev`.
+
 The rules reference (`ToV-Players-Guide.html`) is a plain static file you can open
 directly in a browser, independent of the app.
 
@@ -54,65 +61,82 @@ directly in a browser, independent of the app.
 .
 ├── index.html                  # Vite entry point
 ├── src/
-│   ├── main.tsx                # app bootstrap (mounts <App/> in the store provider)
+│   ├── main.tsx                # bootstrap (mounts <App/> in the store provider)
 │   ├── App.tsx                 # wizard shell + step routing
 │   ├── components/
 │   │   ├── StepNav.tsx         # step navigation
-│   │   ├── CharacterSummary.tsx# live derived-stats panel
-│   │   └── steps/              # one component per creation step
-│   ├── state/                  # character model (types.ts) + context store
-│   ├── data/                   # rules as typed data: abilities, classes,
-│   │                           #   ability-score methods, step definitions
-│   └── styles/                 # global stylesheet
+│   │   ├── CharacterSummary.tsx# live derived-stats side panel
+│   │   ├── SkillPicker.tsx     # reusable "choose N from…" skill picker
+│   │   ├── MagicItemPicker.tsx # optional magic-item picker
+│   │   └── steps/              # one component per wizard step (10)
+│   ├── state/
+│   │   ├── types.ts            # Character model + freshCharacter/sanitizeCharacter
+│   │   └── CharacterContext.tsx# context store (useCharacter: character/patch/reset)
+│   ├── data/                   # typed rules data + pure helpers (see below)
+│   └── styles/index.css        # global styles (parchment theme, light/dark, print)
 ├── ToV-Players-Guide.html      # rules reference (generated; gitignored)
 ├── ToV-Players-Guide.pdf       # original source rulebook (gitignored)
-└── convert.py                  # PDF → single-column HTML converter
+└── convert.py                  # PDF → single-column HTML converter (PyMuPDF)
 ```
 
-### What's implemented
+**`src/data/` modules** (all extracted from the rules reference unless noted):
 
-- Step wizard shell with navigation and a live character summary
-- **Concept**
-- **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies,
-  notable 1st-level features, **subclass selection** (all 27 subclasses), and **optional
-  multiclassing** with ability-score prerequisite gating
-- **Ability Scores** — standard array, point-buy with the full 32-point cost table, and
-  4d6-drop-lowest rolling
-- **Lineage** — all 8 lineages with size, speed, and traits
-- **Heritage** — all 14 heritages with traits and starting languages
-- **Background** — all 10 backgrounds with proficiencies, equipment, and a talent picker
-  (background suggestions plus the **full 45-talent catalog** with prerequisites)
-- **Interactive skill selection** — class and background "choose N from…" grants resolved
-  into real picks, with cross-source duplicate prevention and computed skill bonuses on the
-  sheet
-- **Spells** — caster classes pick cantrips and 1st-circle spells from their source's list
-  (Arcane / Divine / Primordial / Wyrd; 324-spell database with full effect text and
-  per-class cantrip guidance); non-casters get a skip notice
-- **Magic items** — optional, filterable 214-item catalog (type, rarity, attunement, text)
+| Module | Contents |
+|--------|----------|
+| `abilities.ts` | the six abilities, modifier + format helpers |
+| `abilityScoreMethods.ts` | standard array, point-buy cost table, 4d6 / 5d4×10 rolls |
+| `classes.ts` | 13 classes: hit die, key ability, saves, proficiencies, 1st-level features, starting equipment |
+| `subclasses.ts` | 27 subclasses (data only; not used in 1st-level creation) |
+| `lineages.ts` / `heritages.ts` | 8 lineages, 14 heritages (traits, size/speed, languages) |
+| `backgrounds.ts` | 10 backgrounds (skills, proficiencies, equipment, talent choices) |
+| `talents.ts` | full 45-talent catalog (category, prerequisite, description) |
+| `skills.ts` | 18 skills + a "choose N from…" grant parser |
+| `spells.ts` | 324 spells (circle, source, school, effect text) + per-class spellcasting info |
+| `armor.ts` | armor table + `computeAC` (armor / Unarmored Defense, with breakdown) |
+| `weapons.ts` | weapon table (category, kind, damage, properties, range) |
+| `shop.ts` | priced buyable catalog + equipment-option / weapon-slot parsers |
+| `magicItems.ts` | 214-item magic-item catalog |
+| `combat.ts` | attack/damage/proficiency helpers + calculation breakdowns |
+| `inventory.ts` | resolves a character's concrete owned items from gear + purchases |
+| `multiclass.ts` | multiclass ability-score prerequisites + eligibility |
+| `steps.ts` | the wizard step definitions |
+
+## Features
+
+- **Step wizard** with navigation and a live character summary panel.
+- **Class** — all 13 classes with hit die, key ability, saving throws, proficiencies, and
+  notable 1st-level features; **optional multiclassing** gated by ability-score
+  prerequisites (correct AND/OR logic).
+- **Ability Scores** — standard array, point-buy (full 32-point cost table), and
+  4d6-drop-lowest rolling.
+- **Lineage / Heritage / Background** — full data, with interactive **skill selection**
+  (class + background "choose N from…" resolved into real picks, cross-source
+  de-duplication, computed skill bonuses) and a **talent picker** (background suggestions
+  plus the full 45-talent catalog with prerequisites).
+- **Spells** — casters pick cantrips and 1st-circle spells from their source (Arcane /
+  Divine / Primordial / Wyrd), each expandable to its full effect text, with per-class
+  cantrip guidance; non-casters get a skip notice.
+- **Equipment** — Method 1: pick your class's (a)/(b) gear options, including a dropdown to
+  choose a specific weapon for generic grants ("a martial weapon"). Method 2: roll wealth
+  and **buy from a priced shop** (armor, weapons, packs, gear) with a live wallet and
+  filter. Plus armor selection and **AC** (armor table + Unarmored Defense for
+  Barbarian/Monk). Optional **magic items** (filterable 214-item catalog).
+- **Review** — assembled character sheet (abilities with save bonuses, skills, derived
+  HP/AC/speed, class/lineage/heritage/background features and traits, attacks, equipment,
+  spells, magic items) with **JSON export/import** and **print / save-to-PDF**.
+- **Combat** — equip weapons (limited to your inventory; "show all" available), wear/remove
+  armor and shield (AC updates live), an attacks table (bonus, damage incl. versatile,
+  range, properties, unarmed strike), a Worn & Carried panel, Features & Abilities, and a
+  **"Show calculations"** toggle that reveals the math behind AC, HP, speed, attack bonus,
+  and damage.
 - **Robust save/load** — imported files and old saves are sanitized so malformed data can't
-  corrupt the character state
-- **Combat** — a final step (after Review) with a live stat strip (AC, HP, initiative,
-  proficiency, speed), an attacks table (attack bonus, damage incl. versatile, range,
-  properties, unarmed strike), and Features & Abilities. The weapon picker is limited to
-  the character's actual inventory (granted gear + purchases), and a Worn & Carried panel
-  lists their armor, shield, and magic items
-- **Equipment** — Method 1: pick your class's (a)/(b) gear options interactively; Method 2:
-  roll starting wealth (5d4 × 10 gp) and **buy from a priced shop** (armor, 37 weapons,
-  packs, 87 gear items) with a live wallet and filter. Plus **armor selection and AC**
-  (armor table + Unarmored Defense for Barbarian/Monk)
-- **Review** — assembled character sheet (abilities with save bonuses, derived HP/speed,
-  class/lineage/heritage/background features and traits, equipment) with **JSON
-  export/import** and **print / save-to-PDF**
-- Character state persisted to `localStorage`
-
-All eight creation steps are implemented end to end.
+  corrupt the character state; state auto-persists to `localStorage`.
 
 ## The rules reference
 
 `ToV-Players-Guide.html` is a single-column, readable HTML version of the official
 Player's Guide, generated from `ToV-Players-Guide.pdf` by `convert.py`. It is the source
-of truth when encoding rules data (classes, ability-score methods, equipment, spells,
-etc.).
+of truth when encoding rules data.
 
 It is a **generated file (~11 MB, with embedded images)** — do not hand-edit it.
 
@@ -128,27 +152,31 @@ python3 convert.py 13 19      # optional page range, for testing
 
 ## Roadmap
 
-- [x] App shell (`index.html`) and step-wizard navigation
-- [x] Ability score generator (all three methods, with the point-buy cost table)
-- [x] Class, lineage, heritage, and background selection screens
-- [x] Equipment / starting wealth
-- [x] Derived stats (HP, proficiency bonus, save bonuses)
-- [x] Character sheet view + save/load (JSON export/import, print)
-- [x] Subclass selection (all 27 subclasses)
-- [x] Full talent catalog selection (all 45 talents with prerequisites)
+Done — all of 1st-level character creation:
+
+- [x] Step-wizard shell + navigation + live summary
+- [x] Ability scores (all three methods)
+- [x] Class, lineage, heritage, background selection
+- [x] Interactive skill selection (cross-source dedup + bonuses)
+- [x] Full talent catalog (45 talents, prerequisites)
+- [x] Spell selection for casters (cantrips + 1st-circle, with effect text)
 - [x] Armor / Unarmored Defense AC model
-- [x] Interactive skill selection (class + background, with cross-source dedup and bonuses)
-- [x] Interactive (a)/(b) equipment choices and a buyable shop for Method 2
-- [x] Spell selection for casters (cantrips + 1st-circle by source, with effect text)
+- [x] Interactive (a)/(b) equipment choices, generic-weapon picker, and a buyable shop
 - [x] Magic items catalog (optional)
 - [x] Optional multiclassing (prerequisite-gated)
-- [x] Hardened save/load (sanitized import + migration of old saves)
+- [x] Derived stats + combat step (attacks, AC, HP, speed) with a calculations toggle
+- [x] Character sheet with JSON export/import and print
+- [x] Hardened save/load (sanitized import + old-save migration)
+
+Possible future work (out of scope today): leveling past 1st, subclass features (3rd
+level+), full talent/spell effects at play time, encumbrance, and an equipment shop that
+auto-equips purchases.
 
 ## Attribution & licensing
 
 *Tales of the Valiant* is published by **Kobold Press**. The PDF and the HTML rendered
-from it are included here for reference and are © their respective rights holders. The
-core ToV mechanics are also published in the ORC-licensed reference document — before
+from it are © their respective rights holders and are **not** distributed with this repo.
+The core ToV mechanics are also published in the ORC-licensed reference document — before
 distributing any rules text or data with this app, confirm what you ship is sourced from
 ORC-licensed material rather than copied from the Player's Guide. (Verify the specific
 license terms before publishing.)
