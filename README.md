@@ -114,8 +114,11 @@ directly in a browser, independent of the app.
   de-duplication, computed skill bonuses) and a **talent picker** (background suggestions
   plus the full 45-talent catalog with prerequisites).
 - **Spells** — casters pick cantrips and 1st-circle spells from their source (Arcane /
-  Divine / Primordial / Wyrd), each expandable to its full effect text, with per-class
-  cantrip guidance; non-casters get a skip notice.
+  Divine / Primordial / Wyrd), each expandable to its full effect text. The 1st-circle
+  picker matches how each class actually works: **known** casters (Bard, Sorcerer, Ranger)
+  see a fixed "spells known" count, **prepared** casters (Cleric, Druid) prepare a number
+  equal to their spellcasting modifier + level from the whole list, and the **Wizard** fills
+  a spellbook. Half-casters (Paladin) and non-casters get a skip notice.
 - **Equipment** — Method 1: pick your class's (a)/(b) gear options, including a dropdown to
   choose a specific weapon for generic grants ("a martial weapon"). Method 2: roll wealth
   and **buy from a priced shop** (armor, weapons, packs, gear) with a live wallet and

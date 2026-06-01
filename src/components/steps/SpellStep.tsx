@@ -1,6 +1,33 @@
+import { abilityModifier, ABILITY_ABBR } from '../../data/abilities'
 import { getClass } from '../../data/classes'
-import { spellcastingFor, spellsFor, type Spell } from '../../data/spells'
+import { spellcastingFor, spellsFor, type FirstCircleMode, type Spell } from '../../data/spells'
 import { useCharacter } from '../../state/CharacterContext'
+import type { AbilityScores } from '../../state/types'
+
+const LEVEL = 1 // this is a 1st-level character creator
+
+function firstCircleSpec(mode: FirstCircleMode, scores: AbilityScores) {
+  switch (mode.mode) {
+    case 'known':
+      return { title: 'Spells known', target: mode.count, note: '' }
+    case 'prepared': {
+      const target = Math.max(1, abilityModifier(scores[mode.ability]) + LEVEL)
+      return {
+        title: 'Prepared spells',
+        target,
+        note: `Prepare ${ABILITY_ABBR[mode.ability]} modifier + level = ${target} spell(s) from the whole list.`,
+      }
+    }
+    case 'spellbook':
+      return {
+        title: 'Spellbook',
+        target: mode.count,
+        note: `Record ${mode.count} spells; each day you prepare ${ABILITY_ABBR[mode.prepareAbility]} modifier + level of them.`,
+      }
+    case 'none':
+      return null
+  }
+}
 
 export function SpellStep() {
   const { character, patch } = useCharacter()
@@ -16,8 +43,7 @@ export function SpellStep() {
     )
   }
 
-  const cantrips = spellsFor(info.source, 0)
-  const firstCircle = spellsFor(info.source, 1)
+  const spec = firstCircleSpec(info.firstCircle, character.abilityScores)
 
   function toggle(field: 'cantrips' | 'spells', name: string) {
     const cur = character[field]
@@ -30,32 +56,42 @@ export function SpellStep() {
         {cls.name}s cast <strong>{info.source}</strong> spells. {info.note}
       </p>
 
-      <SpellGroup
-        title="Cantrips"
-        target={info.cantripsKnown}
-        spells={cantrips}
-        selected={character.cantrips}
-        onToggle={(n) => toggle('cantrips', n)}
-      />
-      <SpellGroup
-        title="1st-Circle Spells"
-        target={null}
-        spells={firstCircle}
-        selected={character.spells}
-        onToggle={(n) => toggle('spells', n)}
-      />
+      {info.cantripsKnown ? (
+        <SpellGroup
+          title="Cantrips"
+          target={info.cantripsKnown}
+          spells={spellsFor(info.source, 0)}
+          selected={character.cantrips}
+          onToggle={(n) => toggle('cantrips', n)}
+        />
+      ) : null}
+
+      {spec ? (
+        <SpellGroup
+          title={spec.title}
+          subtitle={spec.note}
+          target={spec.target}
+          spells={spellsFor(info.source, 1)}
+          selected={character.spells}
+          onToggle={(n) => toggle('spells', n)}
+        />
+      ) : (
+        <p className="muted feature-note">No 1st-circle spells to choose at 1st level.</p>
+      )}
     </div>
   )
 }
 
 function SpellGroup({
   title,
+  subtitle,
   target,
   spells,
   selected,
   onToggle,
 }: {
   title: string
+  subtitle?: string
   target: number | null
   spells: Spell[]
   selected: string[]
@@ -71,6 +107,7 @@ function SpellGroup({
           {target !== null ? ` / ${target}` : ''} selected)
         </span>
       </h3>
+      {subtitle && <p className="muted feature-note">{subtitle}</p>}
       <div className="spell-list">
         {spells.map((sp) => {
           const on = selected.includes(sp.name)
