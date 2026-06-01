@@ -58,6 +58,7 @@ convert.py              # PDF → single-column HTML converter (PyMuPDF)
 | `talents.ts` | full 45-talent catalog (category, prerequisite, description) + `getTalent` |
 | `skills.ts` | 18 skills + `parseSkillGrant` ("choose N from …") |
 | `spells.ts` | 324 spells (circle/source/school/text) + `SPELLCASTING` per class + `spellsFor` |
+| `rituals.ts` | 69 ritual spells (circle/source/school/text) + `ritualsFor`/`getRitual` — for the Ritualist talent's ritual book |
 | `armor.ts` | armor table, `computeAC` (returns ac/source/breakdown), Unarmored Defense |
 | `weapons.ts` | weapon table (category/kind/damage/properties/range) + `parseDamage` |
 | `shop.ts` | priced catalog (`SHOP`) + `parseEquipmentOptions` + `parseWeaponSlots` |

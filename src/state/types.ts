@@ -33,6 +33,10 @@ export interface Character {
   spells: string[]
   /** Spells prepared for the day, chosen from `spells` (Wizard only). */
   preparedSpells: string[]
+  /** Ritualist talent: chosen ritual spell source (Arcane/Divine/Primordial/Wyrd). */
+  ritualSource: string | null
+  /** Ritualist talent: rituals recorded in the ritual book (ritual names). */
+  ritualSpells: string[]
   /** Starting-equipment method: take granted gear, or roll for wealth. */
   equipmentMethod: 'granted' | 'wealth' | null
   /** Starting gold (Method 2), in gp. */
@@ -80,6 +84,8 @@ export const INITIAL_CHARACTER: Character = {
   cantrips: [],
   spells: [],
   preparedSpells: [],
+  ritualSource: null,
+  ritualSpells: [],
   equipmentMethod: null,
   gold: null,
   equipmentChoices: {},
@@ -108,13 +114,13 @@ export function sanitizeCharacter(data: unknown): Character {
   str('concept')
   for (const k of [
     'classId', 'subclassId', 'scoreMethod', 'talentId', 'lineageId', 'heritageId',
-    'backgroundId', 'armorId', 'equipmentMethod',
+    'backgroundId', 'armorId', 'equipmentMethod', 'ritualSource',
   ] as const) {
     if (typeof d[k] === 'string') (out[k] as string | null) = d[k] as string
   }
   for (const k of [
     'multiclasses', 'classSkills', 'backgroundSkills', 'cantrips', 'spells', 'preparedSpells',
-    'magicItems', 'equippedWeapons',
+    'ritualSpells', 'magicItems', 'equippedWeapons',
   ] as const) {
     if (Array.isArray(d[k])) out[k] = (d[k] as unknown[]).filter((x): x is string => typeof x === 'string')
   }

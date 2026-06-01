@@ -277,7 +277,9 @@ export function ReviewStep() {
           </section>
         )}
 
-        {(character.cantrips.length > 0 || character.spells.length > 0) && (
+        {(character.cantrips.length > 0 ||
+          character.spells.length > 0 ||
+          character.ritualSpells.length > 0) && (
           <section className="sheet-block">
             <h3>Spells</h3>
             {character.cantrips.length > 0 && (
@@ -298,6 +300,14 @@ export function ReviewStep() {
             {character.preparedSpells.length > 0 && (
               <p>
                 <strong>Prepared:</strong> {[...character.preparedSpells].sort().join(', ')}
+              </p>
+            )}
+            {character.ritualSpells.length > 0 && (
+              <p>
+                <strong>
+                  Ritual Book{character.ritualSource ? ` (${character.ritualSource})` : ''}:
+                </strong>{' '}
+                {[...character.ritualSpells].sort().join(', ')}
               </p>
             )}
           </section>

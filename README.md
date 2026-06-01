@@ -92,6 +92,7 @@ directly in a browser, independent of the app.
 | `talents.ts` | full 45-talent catalog (category, prerequisite, description) |
 | `skills.ts` | 18 skills + a "choose N from…" grant parser |
 | `spells.ts` | 324 spells (circle, source, school, effect text) + per-class spellcasting info |
+| `rituals.ts` | 69 ritual spells for the Ritualist talent's ritual book (circle, source, school, text) |
 | `armor.ts` | armor table + `computeAC` (armor / Unarmored Defense, with breakdown) |
 | `weapons.ts` | weapon table (category, kind, damage, properties, range) |
 | `shop.ts` | priced buyable catalog + equipment-option / weapon-slot parsers |
@@ -118,7 +119,10 @@ directly in a browser, independent of the app.
   picker matches how each class actually works: **known** casters (Bard, Sorcerer, Ranger)
   see a fixed "spells known" count, **prepared** casters (Cleric, Druid) prepare a number
   equal to their spellcasting modifier + level from the whole list, and the **Wizard** fills
-  a spellbook. Half-casters (Paladin) and non-casters get a skip notice.
+  a spellbook and then prepares a daily subset from it. Half-casters (Paladin) and non-casters
+  get a skip notice. Characters with the **Ritualist** talent also get a ritual book: pick a
+  spell source and record one ritual of each spell circle unlocked (one 1st-circle ritual at
+  1st level) from the 69-ritual catalog.
 - **Equipment** — Method 1: pick your class's (a)/(b) gear options, including a dropdown to
   choose a specific weapon for generic grants ("a martial weapon"). Method 2: roll wealth
   and **buy from a priced shop** (armor, weapons, packs, gear) with a live wallet and

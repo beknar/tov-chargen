@@ -28,6 +28,8 @@ export function ClassStep() {
                   cantrips: [],
                   spells: [],
                   preparedSpells: [],
+                  ritualSource: null,
+                  ritualSpells: [],
                   multiclasses: character.multiclasses.filter((m) => m !== cls.id),
                   equipmentChoices: {},
                 })

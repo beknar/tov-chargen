@@ -154,6 +154,28 @@ def test_spell_source_counts(page):
     assert counts["first"] == 26
 
 
+# ---- rituals (Ritualist talent) ----
+
+def test_ritual_catalog_size(page):
+    n = eval_module(page, "const m = await import('/src/data/rituals.ts'); return m.RITUALS.length")
+    assert n == 69
+
+def test_rituals_for_arcane_first_circle(page):
+    # at 1st level a full caster unlocks 1st circle -> one 1st-circle ritual
+    names = eval_module(page, """
+      const m = await import('/src/data/rituals.ts')
+      return m.ritualsFor('Arcane', 1).map((r) => r.name)
+    """)
+    # all returned rituals are 1st circle and Arcane-sourced
+    assert "Identify" in names
+    assert "Find Familiar" not in names  # Find Familiar's ritual is Wyrd-only
+    assert names == sorted(names)  # ritualsFor sorts (circle, then name) — all circle 1 here
+
+def test_get_ritual_sources(page):
+    src = eval_module(page, "const m = await import('/src/data/rituals.ts'); return m.getRitual('Locate').sources")
+    assert set(src) == {"Arcane", "Divine", "Primordial", "Wyrd"}
+
+
 # ---- data integrity ----
 
 def test_catalog_sizes(page):

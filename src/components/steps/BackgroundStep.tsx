@@ -17,7 +17,20 @@ export function BackgroundStep() {
         : null
     // reset skills to the new background's auto-granted (fixed) skills
     const fixed = bg ? parseSkillGrant(bg.skills).fixed : []
-    patch({ backgroundId: id, talentId: keepTalent, backgroundSkills: fixed })
+    patch({
+      backgroundId: id,
+      talentId: keepTalent,
+      backgroundSkills: fixed,
+      ...(keepTalent === 'Ritualist' ? {} : { ritualSource: null, ritualSpells: [] }),
+    })
+  }
+
+  // Picking a talent other than Ritualist clears any recorded ritual book.
+  function pickTalent(name: string) {
+    patch({
+      talentId: name,
+      ...(name === 'Ritualist' ? {} : { ritualSource: null, ritualSpells: [] }),
+    })
   }
 
   return (
@@ -84,7 +97,7 @@ export function BackgroundStep() {
                   role="radio"
                   aria-checked={sel}
                   className={`choice-card ${sel ? 'selected' : ''}`}
-                  onClick={() => patch({ talentId: name })}
+                  onClick={() => pickTalent(name)}
                 >
                   <span className="choice-title">
                     {name}
@@ -109,7 +122,7 @@ export function BackgroundStep() {
                         <button
                           className={`talent-row ${sel ? 'selected' : ''}`}
                           aria-pressed={sel}
-                          onClick={() => patch({ talentId: t.name })}
+                          onClick={() => pickTalent(t.name)}
                         >
                           <span className="talent-row-name">{t.name}</span>
                           {t.prerequisite && (
