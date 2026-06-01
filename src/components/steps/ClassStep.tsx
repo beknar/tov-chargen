@@ -27,6 +27,7 @@ export function ClassStep() {
                   classSkills: [],
                   cantrips: [],
                   spells: [],
+                  preparedSpells: [],
                   multiclasses: character.multiclasses.filter((m) => m !== cls.id),
                   equipmentChoices: {},
                 })

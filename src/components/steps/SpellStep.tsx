@@ -44,11 +44,27 @@ export function SpellStep() {
   }
 
   const spec = firstCircleSpec(info.firstCircle, character.abilityScores)
+  const fc = info.firstCircle
 
-  function toggle(field: 'cantrips' | 'spells', name: string) {
+  function toggle(field: 'cantrips' | 'spells' | 'preparedSpells', name: string) {
     const cur = character[field]
+    if (field === 'spells' && cur.includes(name)) {
+      // Removing a spellbook entry also un-prepares it.
+      patch({
+        spells: cur.filter((n) => n !== name),
+        preparedSpells: character.preparedSpells.filter((n) => n !== name),
+      })
+      return
+    }
     patch({ [field]: cur.includes(name) ? cur.filter((n) => n !== name) : [...cur, name] })
   }
+
+  // Wizards prepare a daily subset from their spellbook.
+  const preparedTarget =
+    fc.mode === 'spellbook'
+      ? Math.max(1, abilityModifier(character.abilityScores[fc.prepareAbility]) + LEVEL)
+      : null
+  const spellbookSpells = spellsFor(info.source, 1).filter((sp) => character.spells.includes(sp.name))
 
   return (
     <div className="spell-step">
@@ -78,6 +94,23 @@ export function SpellStep() {
       ) : (
         <p className="muted feature-note">No 1st-circle spells to choose at 1st level.</p>
       )}
+
+      {fc.mode === 'spellbook' ? (
+        spellbookSpells.length ? (
+          <SpellGroup
+            title="Prepared today"
+            subtitle={`Prepare ${ABILITY_ABBR[fc.prepareAbility]} modifier + level = ${preparedTarget} spell(s) from your spellbook. You can swap which spells are prepared after a long rest.`}
+            target={preparedTarget}
+            spells={spellbookSpells}
+            selected={character.preparedSpells}
+            onToggle={(n) => toggle('preparedSpells', n)}
+          />
+        ) : (
+          <p className="muted feature-note">
+            Record spells in your spellbook above, then choose which to prepare for the day.
+          </p>
+        )
+      ) : null}
     </div>
   )
 }

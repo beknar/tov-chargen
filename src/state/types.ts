@@ -28,8 +28,11 @@ export interface Character {
   talentId: string | null
   /** Chosen cantrips (spell names). */
   cantrips: string[]
-  /** Chosen 1st-circle spells (spell names). */
+  /** Chosen 1st-circle spells (spell names). For a Wizard these are the
+   *  spellbook entries; the daily-prepared subset is `preparedSpells`. */
   spells: string[]
+  /** Spells prepared for the day, chosen from `spells` (Wizard only). */
+  preparedSpells: string[]
   /** Starting-equipment method: take granted gear, or roll for wealth. */
   equipmentMethod: 'granted' | 'wealth' | null
   /** Starting gold (Method 2), in gp. */
@@ -76,6 +79,7 @@ export const INITIAL_CHARACTER: Character = {
   talentId: null,
   cantrips: [],
   spells: [],
+  preparedSpells: [],
   equipmentMethod: null,
   gold: null,
   equipmentChoices: {},
@@ -109,8 +113,8 @@ export function sanitizeCharacter(data: unknown): Character {
     if (typeof d[k] === 'string') (out[k] as string | null) = d[k] as string
   }
   for (const k of [
-    'multiclasses', 'classSkills', 'backgroundSkills', 'cantrips', 'spells', 'magicItems',
-    'equippedWeapons',
+    'multiclasses', 'classSkills', 'backgroundSkills', 'cantrips', 'spells', 'preparedSpells',
+    'magicItems', 'equippedWeapons',
   ] as const) {
     if (Array.isArray(d[k])) out[k] = (d[k] as unknown[]).filter((x): x is string => typeof x === 'string')
   }

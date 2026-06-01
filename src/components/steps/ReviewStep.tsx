@@ -18,6 +18,7 @@ import { getShopItem, gp, parseEquipmentOptions } from '../../data/shop'
 import { getMagicItem } from '../../data/magicItems'
 import { getWeapon } from '../../data/weapons'
 import { unarmedStrike, weaponAttack } from '../../data/combat'
+import { spellcastingFor } from '../../data/spells'
 import { sanitizeCharacter, type Character } from '../../state/types'
 import { useCharacter } from '../../state/CharacterContext'
 
@@ -286,7 +287,17 @@ export function ReviewStep() {
             )}
             {character.spells.length > 0 && (
               <p>
-                <strong>1st Circle:</strong> {[...character.spells].sort().join(', ')}
+                <strong>
+                  {spellcastingFor(character.classId)?.firstCircle.mode === 'spellbook'
+                    ? 'Spellbook (1st Circle):'
+                    : '1st Circle:'}
+                </strong>{' '}
+                {[...character.spells].sort().join(', ')}
+              </p>
+            )}
+            {character.preparedSpells.length > 0 && (
+              <p>
+                <strong>Prepared:</strong> {[...character.preparedSpells].sort().join(', ')}
               </p>
             )}
           </section>
