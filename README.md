@@ -11,6 +11,8 @@ sheet, entirely in the browser.
 
 ![The Concept step of the ToV Character Creator, with the wizard step nav and a live character summary panel](docs/screenshot-concept.png)
 
+[![Watch the ToV Character Creator on YouTube](https://img.youtube.com/vi/YloV8roS3DE/hqdefault.jpg)](https://www.youtube.com/watch?v=YloV8roS3DE)
+
 ▶️ **[Watch a full character-creation walkthrough](docs/walkthrough.mp4)** (~45s, mp4) — building a
 sample Wizard from Concept through Combat.
 
