@@ -9,6 +9,8 @@ sheet, entirely in the browser.
 > **Status:** feature-complete for 1st-level character creation. All creation steps,
 > derived stats, a combat sheet, and save/load are implemented end to end.
 
+![The Concept step of the ToV Character Creator, with the wizard step nav and a live character summary panel](docs/screenshot-concept.png)
+
 ## What it does
 
 The app is a step wizard. Steps 1–8 follow the official character-creation sequence from
